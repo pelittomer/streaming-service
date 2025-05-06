@@ -1,26 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { CreateEpisodeDto } from './dto/create-episode.dto';
-import { UpdateEpisodeDto } from './dto/update-episode.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Episode } from './schemas/episode.schema';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class EpisodeService {
-  create(createEpisodeDto: CreateEpisodeDto) {
-    return 'This action adds a new episode';
-  }
+  constructor(
+    @InjectModel(Episode.name) private episodeModel: Model<Episode>
+  ) { }
 
-  findAll() {
-    return `This action returns all episode`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} episode`;
-  }
-
-  update(id: number, updateEpisodeDto: UpdateEpisodeDto) {
-    return `This action updates a #${id} episode`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} episode`;
-  }
 }

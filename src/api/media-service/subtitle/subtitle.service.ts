@@ -1,26 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { CreateSubtitleDto } from './dto/create-subtitle.dto';
-import { UpdateSubtitleDto } from './dto/update-subtitle.dto';
+import { SubtitleRepository } from './subtitle.repository';
 
 @Injectable()
 export class SubtitleService {
-  create(createSubtitleDto: CreateSubtitleDto) {
-    return 'This action adds a new subtitle';
-  }
+  constructor(
+    private readonly subtitleRepository: SubtitleRepository
+  ) { }
 
-  findAll() {
-    return `This action returns all subtitle`;
-  }
 
-  findOne(id: number) {
-    return `This action returns a #${id} subtitle`;
-  }
-
-  update(id: number, updateSubtitleDto: UpdateSubtitleDto) {
-    return `This action updates a #${id} subtitle`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} subtitle`;
-  }
 }
