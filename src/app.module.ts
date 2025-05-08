@@ -20,7 +20,6 @@ import { SeasonModule } from './api/media-service/series/season/season.module';
 import { EpisodeModule } from './api/media-service/series/episode/episode.module';
 import { PaymentModule } from './api/payment-service/payment/payment.module';
 import { ReviewModule } from './api/review-service/review/review.module';
-import { WatchListModule } from './api/profile-service/watch-list/watch-list.module';
 import { WatchedHistoryModule } from './api/profile-service/watched-history/watched-history.module';
 import { ActorModule } from './api/media-service/actor/actor.module';
 import { DirectorModule } from './api/media-service/director/director.module';
@@ -61,7 +60,6 @@ import { DirectorModule } from './api/media-service/director/director.module';
     EpisodeModule,
     PaymentModule,
     ReviewModule,
-    WatchListModule,
     WatchedHistoryModule,
     ActorModule,
     DirectorModule,

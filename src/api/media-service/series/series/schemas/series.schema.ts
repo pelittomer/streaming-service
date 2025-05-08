@@ -1,4 +1,3 @@
-import { forwardRef } from "@nestjs/common";
 import { Prop, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 import { Actor } from "src/api/media-service/actor/schemas/actor.schema";
