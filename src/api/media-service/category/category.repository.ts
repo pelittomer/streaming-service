@@ -16,4 +16,8 @@ export class CategoryRepository {
     async create(queryFields: Partial<Category>): Promise<void> {
         await this.categoryModel.create(queryFields)
     }
+
+    async find(): Promise<Category[]> {
+        return await this.categoryModel.find().sort({ views: -1 })
+    }
 }

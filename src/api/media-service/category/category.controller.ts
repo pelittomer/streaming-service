@@ -21,7 +21,7 @@ export class CategoryController {
 
   @Get()
   getAllCategories() {
-    //Retrieves a list of all available categories.
+    return this.categoryService.getAllCategories()
   }
 
 }
