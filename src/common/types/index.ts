@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 
 export enum Role {
     Customer = "CUSTOMER",
@@ -51,4 +52,10 @@ export enum Gender {
     Male = "Male",
     Female = "Female",
     Other = "Other"
+}
+
+export interface UserInfo {
+    userId: Types.ObjectId;
+    username: string;
+    roles: Role
 }

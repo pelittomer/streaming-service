@@ -27,4 +27,8 @@ export class UserRepository {
     async findById(userId: Types.ObjectId): Promise<UserDocument | null> {
         return await this.userModel.findById(userId)
     }
+
+    async findCurrentUser(userId: Types.ObjectId): Promise<Omit<UserDocument, 'emailVerificationToken'|'password'>> {
+        return await this.userModel.findById(userId).select('-emailVerificationToken -password')
+    }
 }
