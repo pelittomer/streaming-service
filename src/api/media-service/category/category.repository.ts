@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Category } from "./schemas/category.schema";
+import { Category, CategoryDocument } from "./schemas/category.schema";
 import { Model } from "mongoose";
 
 @Injectable()
@@ -9,4 +9,11 @@ export class CategoryRepository {
         @InjectModel(Category.name) private categoryModel: Model<Category>
     ) { }
 
+    async exists(queryFields: Partial<Category>): Promise<Pick<CategoryDocument, '_id'> | null> {
+        return await this.categoryModel.exists(queryFields)
+    }
+
+    async create(queryFields: Partial<Category>): Promise<void> {
+        await this.categoryModel.create(queryFields)
+    }
 }
