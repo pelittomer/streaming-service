@@ -19,4 +19,8 @@ export class UserRepository {
     async create(userInputs: Partial<User>): Promise<UserDocument> {
         return await this.userModel.create(userInputs)
     }
+
+    async findOne(query: Partial<User>): Promise<UserDocument | null> {
+        return await this.userModel.findOne(query)
+    }
 }

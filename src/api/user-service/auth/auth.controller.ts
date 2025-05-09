@@ -1,6 +1,8 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
+import { LoginDto } from './dto/login.dto';
+import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -14,10 +16,11 @@ export class AuthController {
   }
 
   @Post('sign-in')
-  signIn() {
-    /*
-       This function allows existing users to access their accounts by verifying their credentials (usually email and password). Upon successful verification, it establishes a session or issues an access token.
-    */
+  signIn(
+    @Body() userInputs: LoginDto,
+    @Res({ passthrough: true }) res: Response
+  ) {
+    return this.authService.login(userInputs, res)
   }
 
   @Post('sign-out')
