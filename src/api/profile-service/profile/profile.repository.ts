@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Profile } from "./schemas/profile.schema";
-import { Model } from "mongoose";
+import { Profile, ProfileDocument } from "./schemas/profile.schema";
+import { Model, Types } from "mongoose";
 import { SharedUtilsService } from "src/common/utils/shared-utils.service";
 import { UploadService } from "src/api/upload-service/upload/upload.service";
 
@@ -25,5 +25,9 @@ export class ProfileRepository {
                 avatar: imageId
             }], { session })
         })
+    }
+
+    async findOne(queryFields: Partial<Profile | Pick<ProfileDocument, '_id'>>): Promise<ProfileDocument | null> {
+        return await this.profileModel.findOne(queryFields)
     }
 }
