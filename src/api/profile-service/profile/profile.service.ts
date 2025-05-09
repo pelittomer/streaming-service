@@ -4,7 +4,7 @@ import { CreateProfileDto } from './dto/create-profile.dto';
 import { Request } from 'express';
 import { SharedUtilsService } from 'src/common/utils/shared-utils.service';
 import { Types } from 'mongoose';
-import { ProfileDocument } from './schemas/profile.schema';
+import { Profile, ProfileDocument } from './schemas/profile.schema';
 
 @Injectable()
 export class ProfileService {
@@ -34,5 +34,11 @@ export class ProfileService {
     const user = this.sharedUtilsService.getUserInfo(req)
     const userId = new Types.ObjectId(user.userId)
     return await this.profileRepostiory.findOne({ _id: profileId, user: userId })
+  }
+
+  async getUserProfile(req: Request): Promise<Profile[]> {
+    const user = this.sharedUtilsService.getUserInfo(req)
+    const userId = new Types.ObjectId(user.userId)
+    return await this.profileRepostiory.find({ user: userId })
   }
 }

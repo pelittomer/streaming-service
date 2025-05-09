@@ -30,4 +30,9 @@ export class ProfileRepository {
     async findOne(queryFields: Partial<Profile | Pick<ProfileDocument, '_id'>>): Promise<ProfileDocument | null> {
         return await this.profileModel.findOne(queryFields)
     }
+
+    async find(queryFields: Partial<Profile>): Promise<Profile[]> {
+        return await this.profileModel.find(queryFields).lean()
+    }
+
 }

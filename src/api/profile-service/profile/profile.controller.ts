@@ -31,11 +31,12 @@ export class ProfileController {
     return this.profileService.getCurrentProfile(profileId, req)
   }
 
-  @Get('users')
-  getUserProfiles() {
-    /*
-       This endpoint fetches and returns an array containing the profiles of multiple users.
-    */
+  @UseGuards(AuthGuard)
+  @Get('')
+  getUserProfiles(
+    @Req() req: Request
+  ) {
+    return this.profileService.getUserProfile(req)
   }
 
   @Put()
