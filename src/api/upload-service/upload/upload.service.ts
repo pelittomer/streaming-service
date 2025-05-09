@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UploadRepository } from './upload.repository';
+import { ClientSession, Types } from 'mongoose';
 
 @Injectable()
 export class UploadService {
@@ -7,5 +8,14 @@ export class UploadService {
     private readonly uploadRepository: UploadRepository,
   ) { }
 
+  async createImage(uploadedImage: Express.Multer.File, session: ClientSession): Promise<Types.ObjectId> {
+    const payload = {
+      name: uploadedImage.originalname,
+      mimeType: uploadedImage.mimetype,
+      data: uploadedImage.buffer
+    }
+    const newData = await this.uploadRepository.create(payload, session)
+    return newData._id as Types.ObjectId
+  }
 
 }

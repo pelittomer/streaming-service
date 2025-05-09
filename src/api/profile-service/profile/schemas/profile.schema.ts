@@ -7,7 +7,7 @@ export type ProfileDocument = Profile & Document
 @Schema({ timestamps: true })
 export class Profile {
     @Prop({ type: String, required: true })
-    fullName: string;
+    username: string;
 
     @Prop({ type: String, default: null })
     bio?: string;

@@ -11,6 +11,6 @@ import { Upload, UploadSchema } from './schemas/upload.schema';
   imports: [
     MongooseModule.forFeature([{ name: Upload.name, schema: UploadSchema }]),
   ],
-  exports: [UploadRepository]
+  exports: [UploadRepository, UploadService]
 })
 export class UploadModule { }
