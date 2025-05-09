@@ -1,15 +1,16 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { RegisterDto } from './dto/register.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
 
   @Post('sign-up')
-  signUp() {
-    /* 
-       This function creates a new user account in the system. It typically involves collecting user information such as username, email, and password, and storing it securely.
-    */
+  signUp(
+    @Body() userInputs: RegisterDto
+  ) {
+    return this.authService.register(userInputs)
   }
 
   @Post('sign-in')
