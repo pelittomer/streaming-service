@@ -18,4 +18,9 @@ export class UploadService {
     return newData._id as Types.ObjectId
   }
 
+  async updateExistingImage(uploadedImage: Express.Multer.File, imageId: Types.ObjectId, session: ClientSession): Promise<void> {
+    await this.uploadRepository.findOneAndUpdate(imageId, uploadedImage, session)
+  }
+
+  
 }

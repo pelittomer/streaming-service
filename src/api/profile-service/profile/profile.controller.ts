@@ -6,6 +6,7 @@ import { CreateProfileDto } from './dto/create-profile.dto';
 import { UploadImage } from 'src/common/decorators/upload-image.decorator';
 import { ParseObjectIdPipe } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @Controller('profile')
 export class ProfileController {
@@ -39,11 +40,16 @@ export class ProfileController {
     return this.profileService.getUserProfile(req)
   }
 
-  @Put()
-  updateMyProfile() {
-    /*
-       Allows the currently authenticated user to update their own profile information.
-    */
+  @UseGuards(AuthGuard)
+  @Put(':id')
+  @UploadImage()
+  updateMyProfile(
+    @Body() userInputs: UpdateProfileDto,
+    @Req() req: Request,
+    @UploadedFile() uploadedImage: Express.Multer.File,
+    @Param('id', ParseObjectIdPipe) profileId: Types.ObjectId
+  ) {
+    return this.profileService.updateMyProfile(userInputs, req, uploadedImage, profileId)
   }
 
 }
