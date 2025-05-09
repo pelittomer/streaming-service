@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { User, UserDocument } from "./schemas/user.schema";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 
 @Injectable()
 export class UserRepository {
@@ -22,5 +22,9 @@ export class UserRepository {
 
     async findOne(query: Partial<User>): Promise<UserDocument | null> {
         return await this.userModel.findOne(query)
+    }
+
+    async findById(userId: Types.ObjectId): Promise<UserDocument | null> {
+        return await this.userModel.findById(userId)
     }
 }
