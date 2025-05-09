@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { RegisterDto } from './dto/register.dto';
 import { UserRepository } from '../user/user.repository';
 import { compare, genSalt, hash } from 'bcrypt';
@@ -6,7 +6,7 @@ import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { AppConfig } from 'src/config/type';
-import { CookieOptions, Response } from 'express';
+import { CookieOptions, Request, Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -78,5 +78,20 @@ export class AuthService {
         res.cookie('jwt', refreshToken, this.jwtCookieOptions)
 
         return { accessToken }
+    }
+
+    logout(req: Request, res: Response): string | undefined {
+        const cookies = req.cookies
+        if (!cookies.jwt) {
+            res.sendStatus(HttpStatus.OK)
+            return
+        }
+        res.clearCookie('jwt', {
+            httpOnly: true,
+            sameSite: 'none',
+            secure: true
+        })
+
+        return 'You have successfully logged out.'
     }
 }

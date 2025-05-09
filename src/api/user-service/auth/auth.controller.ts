@@ -1,8 +1,8 @@
-import { Body, Controller, Get, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -24,10 +24,11 @@ export class AuthController {
   }
 
   @Post('sign-out')
-  signOut() {
-    /*
-      This function terminates the user's current session or invalidates their access token, effectively logging them out of the system.
-    */
+  signOut(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response
+  ) {
+    return this.authService.logout(req, res)
   }
 
   @Get('refresh')
