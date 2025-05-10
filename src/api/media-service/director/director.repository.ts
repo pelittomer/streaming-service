@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Director, DirectorDocument } from "./schemas/director.schema";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import { CreateDirectorDto } from "./dto/create-director.dto";
 import { SharedUtilsService } from "src/common/utils/shared-utils.service";
 import { UploadService } from "src/api/upload-service/upload/upload.service";
@@ -28,4 +28,7 @@ export class DirectorRepository {
         return await this.directorModel.find().select('fullName').lean()
     }
 
+    async findById(directorId: Types.ObjectId): Promise<Director | null> {
+        return await this.directorModel.findById(directorId).lean()
+    }
 }

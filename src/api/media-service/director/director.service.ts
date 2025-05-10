@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { DirectorRepository } from './director.repository';
 import { CreateDirectorDto } from './dto/create-director.dto';
-import { DirectorDocument } from './schemas/director.schema';
+import { Director, DirectorDocument } from './schemas/director.schema';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class DirectorService {
@@ -16,5 +17,9 @@ export class DirectorService {
 
   async getAllDirectors(): Promise<Pick<DirectorDocument, '_id' | 'fullName'>[]> {
     return await this.directorRepository.find()
+  }
+
+  async getDirectorById(directorId: Types.ObjectId): Promise<Director | null> {
+    return await this.directorRepository.findById(directorId)
   }
 }
