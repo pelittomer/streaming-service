@@ -17,9 +17,6 @@ export class Actor {
     birthDate: Date;
 
     @Prop({ type: String, required: true })
-    birthPlace: string;
-
-    @Prop({ type: String, required: true })
     bio: string;
 
     @Prop({ type: String, enum: Gender })
