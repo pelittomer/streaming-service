@@ -1,4 +1,4 @@
-import { Prop, SchemaFactory } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 import { Upload } from "src/api/upload-service/upload/schemas/upload.schema";
 import { FilmographyRole, Gender } from "src/common/types";
@@ -8,15 +8,13 @@ import { forwardRef } from "@nestjs/common";
 
 export type DirectorDocument = Director & Document
 
+@Schema()
 export class Director {
     @Prop({ type: String, required: true })
     fullName: string;
 
     @Prop({ type: Date, required: true })
     birthDate: Date;
-
-    @Prop({ type: String, required: true })
-    birthPlace: string;
 
     @Prop({ type: String, required: true })
     bio: string;
