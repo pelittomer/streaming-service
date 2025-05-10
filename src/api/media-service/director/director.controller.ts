@@ -22,9 +22,10 @@ export class DirectorController {
     return this.directorService.addDirector(userInputs, uploadedImage)
   }
 
+
   @Get()
   getAllDirectors() {
-    //Retrieves a list of all available directors.
+    return this.directorService.getAllDirectors()
   }
 
   @Get(':id')

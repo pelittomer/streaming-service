@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Director } from "./schemas/director.schema";
+import { Director, DirectorDocument } from "./schemas/director.schema";
 import { Model } from "mongoose";
 import { CreateDirectorDto } from "./dto/create-director.dto";
 import { SharedUtilsService } from "src/common/utils/shared-utils.service";
@@ -22,6 +22,10 @@ export class DirectorRepository {
                 profilePicture: imageId
             })
         })
+    }
+
+    async find(): Promise<Pick<DirectorDocument, '_id' | 'fullName'>[]> {
+        return await this.directorModel.find().select('fullName').lean()
     }
 
 }
