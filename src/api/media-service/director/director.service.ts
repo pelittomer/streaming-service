@@ -15,7 +15,7 @@ export class DirectorService {
     return 'Director created successfully.'
   }
 
-  async getAllDirectors(): Promise<Pick<DirectorDocument, '_id' | 'fullName'>[]> {
+  async getAllDirectors(): Promise<Pick<DirectorDocument, '_id' | 'fullName' | 'profilePicture'>[]> {
     return await this.directorRepository.find()
   }
 

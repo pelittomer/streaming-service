@@ -17,14 +17,14 @@ export class DirectorRepository {
     async create(userInputs: CreateDirectorDto, uploadedImage: Express.Multer.File): Promise<void> {
         await this.sharedUtilsService.executeTransaction(async (session) => {
             const imageId = await this.uploadService.createImage(uploadedImage, session)
-            await this.directorModel.create({
+            await this.directorModel.create([{
                 ...userInputs,
                 profilePicture: imageId
-            })
+            }], { session })
         })
     }
 
-    async find(): Promise<Pick<DirectorDocument, '_id' | 'fullName'>[]> {
+    async find(): Promise<Pick<DirectorDocument, '_id' | 'fullName' | 'profilePicture'>[]> {
         return await this.directorModel.find().select('fullName').lean()
     }
 
