@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Actor, ActorDocument } from "./schemas/actor.schema";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import { CreateActorDto } from "./dto/create-actor.dto";
 import { SharedUtilsService } from "src/common/utils/shared-utils.service";
 import { UploadService } from "src/api/upload-service/upload/upload.service";
@@ -26,5 +26,9 @@ export class ActorRepository {
 
     async find(): Promise<Pick<ActorDocument, '_id' | 'fullName' | 'profilePicture'>[]> {
         return await this.actorModel.find().select('fullName profilePicture').lean()
+    }
+
+    async findById(actorId: Types.ObjectId): Promise<ActorDocument | null> {
+        return await this.actorModel.findById(actorId)
     }
 }
