@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ActorRepository } from './actor.repository';
 import { CreateActorDto } from './dto/create-actor.dto';
+import { ActorDocument } from './schemas/actor.schema';
 
 @Injectable()
 export class ActorService {
@@ -13,4 +14,8 @@ export class ActorService {
     return 'Actor created successfully.'
   }
 
+  getAllActor(): Promise<Pick<ActorDocument, '_id' | 'fullName' | 'profilePicture'>[]> {
+    return this.actorRepository.find()
+  }
+  
 }

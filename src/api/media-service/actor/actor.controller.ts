@@ -24,7 +24,7 @@ export class ActorController {
 
   @Get()
   getAllActor() {
-    //Retrieves a list of all available actor.
+    return this.actorService.getAllActor()
   }
 
   @Get(':id')
