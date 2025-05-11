@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UploadedFile, UploadedFiles, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UploadedFile, UploadedFiles, UseGuards } from '@nestjs/common';
 import { MovieService } from './movie.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
@@ -6,6 +6,7 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/types';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UploadImage } from 'src/common/decorators/upload-image.decorator';
+import { PartialGetMovieDto } from './dto/get-movie.dto';
 
 @Controller('movie')
 export class MovieController {
@@ -23,8 +24,8 @@ export class MovieController {
   }
 
   @Get()
-  getAllMovies() {
-    //Retrieves a list of all available movies.
+  getAllMovies(@Query() query: PartialGetMovieDto) {
+    return this.movieService.getAllMovies(query)
   }
 
   @Get(':id')

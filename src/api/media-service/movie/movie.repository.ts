@@ -28,4 +28,12 @@ export class MovieRepository {
             })
         })
     }
+    async find(limit: number, startIndex: number, filter: any, sortCriteria: any): Promise<Pick<MovieDocument, '_id' | 'title' | 'synopsis' | 'rate' | 'poster'>[]> {
+        return this.movieModel.find(filter)
+            .sort(sortCriteria)
+            .skip(startIndex)
+            .limit(limit)
+            .select('title synopsis rate poster')
+            .lean()
+    }
 }

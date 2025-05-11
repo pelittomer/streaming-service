@@ -1,6 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { MovieRepository } from './movie.repository';
 import { CreateMovieDto } from './dto/create-movie.dto';
+import { PartialGetMovieDto } from './dto/get-movie.dto';
+import { Types } from 'mongoose';
+import { MovieDocument } from './schemas/movie.schema';
 
 @Injectable()
 export class MovieService {
@@ -18,7 +21,33 @@ export class MovieService {
     }
 
     await this.movieRepository.create(userInputs, uploadedFile)
-    
+
     return 'Movie created successfully.'
+  }
+
+  async getAllMovies(queryFields: PartialGetMovieDto): Promise<Pick<MovieDocument, '_id' | 'title' | 'synopsis' | 'rate' | 'poster'>[]> {
+    const limit = 30
+    const page = queryFields.page || 1
+    const startIndex = (page - 1) * limit
+
+    let filter: any = {}
+    let sortCriteria: any = {}
+
+    if (queryFields.categoryId) {
+      filter.category = new Types.ObjectId(queryFields.categoryId)
+    }
+    if (queryFields.q) {
+      filter.title = { $regex: new RegExp(queryFields.q, 'i') };
+    }
+    if (queryFields.sort) {
+      const regex = /^(.*?)(?:_|$)(.*?)$/;
+      const match = queryFields.sort.match(regex);
+      if (match) {
+        const [sortField, sortDirection] = match
+        sortCriteria[sortField] = sortDirection === 'desc' ? -1 : 1
+      }
+    }
+
+    return await this.movieRepository.find(limit, startIndex, filter, sortCriteria)
   }
 }
