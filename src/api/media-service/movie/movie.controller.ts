@@ -1,13 +1,25 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UploadedFile, UploadedFiles, UseGuards } from '@nestjs/common';
 import { MovieService } from './movie.service';
+import { AuthGuard } from 'src/common/guards/auth.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { Role } from 'src/common/types';
+import { CreateMovieDto } from './dto/create-movie.dto';
+import { UploadImage } from 'src/common/decorators/upload-image.decorator';
 
 @Controller('movie')
 export class MovieController {
   constructor(private readonly movieService: MovieService) { }
 
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @Post()
-  addMovie() {
-    //Adds a new movie to the database.
+  @UploadImage()
+  addMovie(
+    @Body() userInputs: CreateMovieDto,
+    @UploadedFile() uploadedFile: Express.Multer.File
+  ) {
+    return this.movieService.addMovie(userInputs, uploadedFile)
   }
 
   @Get()

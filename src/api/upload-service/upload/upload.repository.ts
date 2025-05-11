@@ -9,7 +9,7 @@ export class UploadRepository {
         @InjectModel(Upload.name) private uploadModel: Model<Upload>
     ) { }
 
-    async create(userInputs: Partial<Upload>, session: ClientSession): Promise<UploadDocument> {
+    async create(userInputs: Partial<Upload>, session?: ClientSession): Promise<UploadDocument> {
         const [newData] = await this.uploadModel.create([userInputs], { session })
         return newData
     }

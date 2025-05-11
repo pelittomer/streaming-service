@@ -8,7 +8,7 @@ export class UploadService {
     private readonly uploadRepository: UploadRepository,
   ) { }
 
-  async createImage(uploadedImage: Express.Multer.File, session: ClientSession): Promise<Types.ObjectId> {
+  async createImage(uploadedImage: Express.Multer.File, session?: ClientSession): Promise<Types.ObjectId> {
     const payload = {
       name: uploadedImage.originalname,
       mimeType: uploadedImage.mimetype,
