@@ -3,7 +3,7 @@ import { MovieRepository } from './movie.repository';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { PartialGetMovieDto } from './dto/get-movie.dto';
 import { Types } from 'mongoose';
-import { MovieDocument } from './schemas/movie.schema';
+import { Movie, MovieDocument } from './schemas/movie.schema';
 
 @Injectable()
 export class MovieService {
@@ -49,5 +49,9 @@ export class MovieService {
     }
 
     return await this.movieRepository.find(limit, startIndex, filter, sortCriteria)
+  }
+
+  async getMovieById(movieId: Types.ObjectId): Promise<Movie | null> {
+    return await this.movieRepository.findById(movieId)
   }
 }

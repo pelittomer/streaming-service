@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, UploadedFile, UploadedFiles, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UploadedFile, UploadedFiles, UseGuards } from '@nestjs/common';
 import { MovieService } from './movie.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
@@ -7,6 +7,8 @@ import { Role } from 'src/common/types';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UploadImage } from 'src/common/decorators/upload-image.decorator';
 import { PartialGetMovieDto } from './dto/get-movie.dto';
+import { ParseObjectIdPipe } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
 
 @Controller('movie')
 export class MovieController {
@@ -29,8 +31,10 @@ export class MovieController {
   }
 
   @Get(':id')
-  getMovieById() {
-    //Retrieves a specific movie based on the provided ID.
+  getMovieById(
+    @Param('id', ParseObjectIdPipe) movieId: Types.ObjectId
+  ) {
+    return this.movieService.getMovieById(movieId)
   }
 
 }
