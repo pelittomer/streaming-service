@@ -3,6 +3,9 @@ import { AudioRepository } from './audio.repository';
 import { MovieRepository } from '../movie/movie.repository';
 import { EpisodeRepository } from '../series/episode/episode.repository';
 import { CreateAudioDto } from './dto/create-audio.dto';
+import { PartialGetAudioDto } from './dto/get-audio.dto';
+import { AudioDocument } from './schemas/audio.schema';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class AudioService {
@@ -26,7 +29,7 @@ export class AudioService {
       if (!movieExists) {
         throw new NotFoundException(`Movie with ID "${userInputs.movie}" not found!`)
       }
-      await this.audioRepository.create({ movie: userInputs.movie, language: userInputs.language }, uploadedFile)
+      await this.audioRepository.create({ movie: new Types.ObjectId(userInputs.movie), language: userInputs.language }, uploadedFile)
       return 'Audio uploaded and associated with the movie successfully.'
     }
 
@@ -35,11 +38,16 @@ export class AudioService {
       if (!episodeExists) {
         throw new NotFoundException(`Episode with ID "${userInputs.episode}" not found!`)
       }
-      await this.audioRepository.create({ episode: userInputs.episode, language: userInputs.language }, uploadedFile)
+      await this.audioRepository.create({ episode: new Types.ObjectId(userInputs.episode), language: userInputs.language }, uploadedFile)
       return 'Audio uploaded and associated with the episode successfully.'
     }
 
     return 'Audio upload successful.'
   }
 
+  async getAllAudios(query: PartialGetAudioDto): Promise<Pick<AudioDocument, '_id' | 'language' | 'audioFile'>[]> {
+    if (query.episode && query.movie) return []
+    if (!query.episode && !query.movie) return []
+    return await this.audioRepository.find(query)
+  }
 }

@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AudioService } from './audio.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
@@ -6,6 +6,7 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/types';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateAudioDto } from './dto/create-audio.dto';
+import { PartialGetAudioDto } from './dto/get-audio.dto';
 
 @Controller('audio')
 export class AudioController {
@@ -27,8 +28,10 @@ export class AudioController {
   }
 
   @Get()
-  getAllAudios() {
-    //Retrieves a list of all available audio files.
+  getAllAudios(
+    @Query() query: PartialGetAudioDto
+  ) {
+    return this.audioService.getAllAudios(query)
   }
 
 }
