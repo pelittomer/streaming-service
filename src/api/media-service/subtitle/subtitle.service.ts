@@ -4,6 +4,8 @@ import { CreateSubtitleDto } from './dto/create-subtitle.dto';
 import { MovieRepository } from '../movie/movie.repository';
 import { EpisodeRepository } from '../series/episode/episode.repository';
 import { Types } from 'mongoose';
+import { PartialGetSubtitleDto } from './dto/get-subtitle.dto';
+import { SubtitleDocument } from './schemas/subtitle.schema';
 
 @Injectable()
 export class SubtitleService {
@@ -43,4 +45,11 @@ export class SubtitleService {
     return 'Subtitle upload successful.'
   }
 
+  async getAllSubtitles(query: PartialGetSubtitleDto): Promise<Pick<SubtitleDocument, '_id' | 'language' | 'subtitlefile'>[]> {
+    if (query.episode && query.movie) return []
+    if (!query.episode && !query.movie) return []
+    if (query.movie) query.movie = new Types.ObjectId(query.movie)
+    if (query.episode) query.episode = new Types.ObjectId(query.episode)
+    return await this.subtitleRepository.find(query)
+  }
 }

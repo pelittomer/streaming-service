@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Subtitle } from "./schemas/subtitle.schema";
-import { Model } from "mongoose";
+import { Subtitle, SubtitleDocument } from "./schemas/subtitle.schema";
+import { Model, Types } from "mongoose";
 import { UploadService } from "src/api/upload-service/upload/upload.service";
 
 @Injectable()
@@ -16,4 +16,7 @@ export class SubtitleRepository {
         await this.subtitleModel.create({ ...userInputs, subtitlefile: fileId })
     }
 
+    async find(queryFields: Partial<Pick<Subtitle, 'movie' | 'episode'>>): Promise<Pick<SubtitleDocument, '_id' | 'language' | 'subtitlefile'>[]> {
+        return await this.subtitleModel.find(queryFields).select('language subtitlefile').lean()
+    }
 }
