@@ -1,12 +1,32 @@
-import { Controller, Get } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { SubtitleService } from './subtitle.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { AuthGuard } from 'src/common/guards/auth.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { Role } from 'src/common/types';
+import { CreateSubtitleDto } from './dto/create-subtitle.dto';
 
 @Controller('subtitle')
 export class SubtitleController {
-  constructor(private readonly subtitleService: SubtitleService) {}
+  constructor(private readonly subtitleService: SubtitleService) { }
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  @UseInterceptors(FileInterceptor('file'))
+  @Post()
+  addSubtitle(
+    @Body() userInputs: CreateSubtitleDto,
+    @UploadedFile() uploadedFile: Express.Multer.File
+  ) {
+    if (!uploadedFile.mimetype.startsWith('text/')) {
+      throw new BadRequestException('The uploaded file must be in VTT or SRT format.')
+    }
+    return this.subtitleService.addSubtitle(userInputs, uploadedFile)
+  }
 
   @Get()
-  getSubtitle(){
+  getSubtitle() {
     //Retrieves subtitle information for a specific video.
   }
 

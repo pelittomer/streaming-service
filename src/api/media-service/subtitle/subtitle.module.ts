@@ -4,12 +4,16 @@ import { SubtitleController } from './subtitle.controller';
 import { SubtitleRepository } from './subtitle.repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Subtitle, SubtitleSchema } from './schemas/subtitle.schema';
+import { EpisodeModule } from '../series/episode/episode.module';
+import { MovieModule } from '../movie/movie.module';
+import { UploadModule } from 'src/api/upload-service/upload/upload.module';
 
 @Module({
   controllers: [SubtitleController],
   providers: [SubtitleService, SubtitleRepository],
   imports: [
-    MongooseModule.forFeature([{ name: Subtitle.name, schema: SubtitleSchema }])
+    MongooseModule.forFeature([{ name: Subtitle.name, schema: SubtitleSchema }]),
+    EpisodeModule, MovieModule, UploadModule
   ],
   exports: [SubtitleRepository]
 
