@@ -48,6 +48,8 @@ export class AudioService {
   async getAllAudios(query: PartialGetAudioDto): Promise<Pick<AudioDocument, '_id' | 'language' | 'audioFile'>[]> {
     if (query.episode && query.movie) return []
     if (!query.episode && !query.movie) return []
+    if (query.movie) query.movie = new Types.ObjectId(query.movie)
+    if (query.episode) query.episode = new Types.ObjectId(query.episode)
     return await this.audioRepository.find(query)
   }
 }
