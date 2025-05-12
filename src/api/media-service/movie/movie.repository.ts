@@ -18,7 +18,7 @@ export class MovieRepository {
         private readonly sharedUtilsService: SharedUtilsService,
     ) { }
 
-    async exists(queryFields: Partial<Movie>): Promise<Pick<MovieDocument, '_id'> | null> {
+    async exists(queryFields: Partial<Movie | Pick<MovieDocument, '_id'>>): Promise<Pick<MovieDocument, '_id'> | null> {
         return await this.movieModel.exists(queryFields)
     }
 
@@ -31,7 +31,7 @@ export class MovieRepository {
             })
         })
     }
-    
+
     async find(limit: number, startIndex: number, filter: any, sortCriteria: any): Promise<Pick<MovieDocument, '_id' | 'title' | 'synopsis' | 'rate' | 'poster'>[]> {
         return this.movieModel.find(filter)
             .sort(sortCriteria)

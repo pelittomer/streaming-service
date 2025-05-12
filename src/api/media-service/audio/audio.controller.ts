@@ -1,9 +1,30 @@
-import { Controller, Get } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AudioService } from './audio.service';
+import { AuthGuard } from 'src/common/guards/auth.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { Role } from 'src/common/types';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { CreateAudioDto } from './dto/create-audio.dto';
 
 @Controller('audio')
 export class AudioController {
   constructor(private readonly audioService: AudioService) { }
+
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  @Post()
+  @UseInterceptors(FileInterceptor('audio'))
+  addAudio(
+    @Body() userInputs: CreateAudioDto,
+    @UploadedFile() uploadedFile: Express.Multer.File
+  ) {
+    if (!uploadedFile || !uploadedFile.mimetype.startsWith('video/')) {
+      throw new BadRequestException('Audio not found. Please upload file.')
+    }
+    return this.audioService.addAudio(userInputs, uploadedFile)
+  }
 
   @Get()
   getAllAudios() {

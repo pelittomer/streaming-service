@@ -11,8 +11,11 @@ export class Upload {
     @Prop({ type: String, required: true })
     mimeType: string;
 
-    @Prop({ type: Buffer, required: true })
+    @Prop({ type: Buffer})
     data: Buffer;
+
+    @Prop()
+    gridFsFileId: string;
 }
 
 export const UploadSchema = SchemaFactory.createForClass(Upload)

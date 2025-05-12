@@ -8,7 +8,7 @@ export class UploadService {
     private readonly uploadRepository: UploadRepository,
   ) { }
 
-  async createImage(uploadedImage: Express.Multer.File, session?: ClientSession): Promise<Types.ObjectId> {
+  async createImage(uploadedImage: Express.Multer.File, session: ClientSession): Promise<Types.ObjectId> {
     const payload = {
       name: uploadedImage.originalname,
       mimeType: uploadedImage.mimetype,
@@ -22,5 +22,15 @@ export class UploadService {
     await this.uploadRepository.findOneAndUpdate(imageId, uploadedImage, session)
   }
 
-  
+  async uploadToModelWithGridFS(uploadedFile: Express.Multer.File) {
+    const gridFsFileId = await this.uploadRepository.uploadLargeFile(uploadedFile)
+    const payload = {
+      name: uploadedFile.originalname,
+      mimeType: uploadedFile.mimetype,
+      gridFsFileId
+    }
+    const newData = await this.uploadRepository.create(payload)
+    return newData._id as Types.ObjectId
+  }
+
 }
