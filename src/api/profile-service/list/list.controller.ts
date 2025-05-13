@@ -1,15 +1,23 @@
-import { Controller, Get, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { ListService } from './list.service';
+import { AuthGuard } from 'src/common/guards/auth.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { Role } from 'src/common/types';
+import { CreateListDto } from './dto/create-list.dto';
+import { Request } from 'express';
 
 @Controller('list')
 export class ListController {
   constructor(private readonly listService: ListService) { }
-
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Customer)
   @Post()
-  addNewList() {
-    /* 
-      Allows the authenticated user to create a new list.
-    */
+  addNewList(
+    @Body() userInputs: CreateListDto,
+    @Req() req: Request
+  ) {
+    return this.listService.addNewList(userInputs, req)
   }
 
   @Get('id')

@@ -9,5 +9,8 @@ export class ListRepository {
         @InjectModel(List.name) private listModel: Model<List>
     ) { }
 
+    async create(userInputs: Partial<List>): Promise<void> {
+        await this.listModel.create(userInputs)
+    }
 
 }
