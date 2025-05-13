@@ -17,11 +17,17 @@ export class Series {
     @Prop({ type: Types.ObjectId, ref: Upload.name, required: true })
     poster: Types.ObjectId;
 
+    @Prop({ type: String, required: true })
+    synopsis: string;
+
     @Prop({ type: Types.ObjectId, ref: 'Director', required: true })
     directors: Types.ObjectId;
 
     @Prop({ type: [{ type: Types.ObjectId, ref: Actor.name }], default: [] })
     cast: Types.ObjectId[]
+
+    @Prop({ type: Number, default: 0 })
+    rate: number;
 
     @Prop({ type: String, required: true })
     countryOfOrigin: string;

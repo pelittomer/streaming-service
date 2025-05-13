@@ -47,4 +47,9 @@ export class CreateSeriesDto {
     @IsOptional()
     @IsString()
     trailer?: string;
+
+    @ApiProperty({ description: 'A brief summary of the series', example: 'New Jersey based Italian-American mob boss Tony Soprano juggles his family life and his role as the leader of a criminal organization.' })
+    @IsString()
+    @IsNotEmpty()
+    synopsis: string;
 }

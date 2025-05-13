@@ -22,6 +22,14 @@ export class SeriesRepository {
             const poster = await this.uploadService.createImage(uploadedFile, session)
             await this.seriesModel.create([{ ...userInputs, poster }], { session })
         })
+    }
 
+    async find(limit: number, startIndex: number, filter: any, sortCriteria: any): Promise<Pick<SeriesDocument, '_id' | 'title' | 'synopsis' | 'rate' | 'poster'>[]> {
+        return this.seriesModel.find(filter)
+            .sort(sortCriteria)
+            .skip(startIndex)
+            .limit(limit)
+            .select('title synopsis rate poster')
+            .lean()
     }
 }
