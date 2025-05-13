@@ -16,4 +16,8 @@ export class EpisodeRepository {
     async create(userInputs: Partial<Episode>): Promise<void> {
         await this.episodeModel.create(userInputs)
     }
+
+    async find(queryFields: Partial<Episode>): Promise<Episode[]> {
+        return await this.episodeModel.find(queryFields)
+    }
 }
