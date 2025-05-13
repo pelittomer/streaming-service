@@ -3,7 +3,7 @@ import { SeriesRepository } from './series.repository';
 import { CreateSeriesDto } from './dto/create-series.dto';
 import { Types } from 'mongoose';
 import { PartialGetSeriesDto } from './dto/get-series.dto';
-import { SeriesDocument } from './schemas/series.schema';
+import { Series, SeriesDocument } from './schemas/series.schema';
 
 @Injectable()
 export class SeriesService {
@@ -47,5 +47,10 @@ export class SeriesService {
     }
 
     return await this.seriesRepository.find(limit, startIndex, filter, sortCriteria)
+  }
+
+  async getSeriesById(seriesId: Types.ObjectId): Promise<Series | string> {
+    const series = await this.seriesRepository.findById(seriesId)
+    return series ? series : 'Series not found!'
   }
 }

@@ -1,9 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Series, SeriesDocument } from "./schemas/series.schema";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import { SharedUtilsService } from "src/common/utils/shared-utils.service";
 import { UploadService } from "src/api/upload-service/upload/upload.service";
+import { Category } from "../../category/schemas/category.schema";
+import { Director } from "../../director/schemas/director.schema";
+import { Actor } from "../../actor/schemas/actor.schema";
 
 @Injectable()
 export class SeriesRepository {
@@ -31,5 +34,19 @@ export class SeriesRepository {
             .limit(limit)
             .select('title synopsis rate poster')
             .lean()
+    }
+
+    async findById(movieId: Types.ObjectId): Promise<Series | null> {
+        return await this.seriesModel.findById(movieId)
+            .populate<{ category: Category }>('category')
+            .populate<{ directors: Director }>({
+                path: 'directors',
+                select: 'fullName awards profilePicture  knownForSeries'
+            })
+            .populate<{ cast: Actor }>({
+                path: 'cast',
+                select: 'fullName awards profilePicture knownForMovies knownForSeries'
+            })
+            .lean<Series | null>()
     }
 }
