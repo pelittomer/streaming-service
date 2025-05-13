@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Put, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { ListService } from './list.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
@@ -6,10 +6,13 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/types';
 import { CreateListDto } from './dto/create-list.dto';
 import { Request } from 'express';
+import { ParseObjectIdPipe } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
 
 @Controller('list')
 export class ListController {
   constructor(private readonly listService: ListService) { }
+
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Customer)
   @Post()
@@ -19,12 +22,15 @@ export class ListController {
   ) {
     return this.listService.addNewList(userInputs, req)
   }
-
-  @Get('id')
-  getListById() {
-    /*
-       This endpoint fetches and returns the list from the database that matches the given 'id' path parameter.
-    */
+  
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Customer)
+  @Get(':id')
+  getListById(
+    @Param('id', ParseObjectIdPipe) listId: Types.ObjectId,
+    @Req() req: Request
+  ) {
+    return this.listService.getListById(listId, req)
   }
 
   @Get()

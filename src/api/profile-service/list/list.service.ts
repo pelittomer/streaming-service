@@ -4,6 +4,7 @@ import { CreateListDto } from './dto/create-list.dto';
 import { Request } from 'express';
 import { SharedUtilsService } from 'src/common/utils/shared-utils.service';
 import { Types } from 'mongoose';
+import { List } from './schemas/list.schema';
 
 @Injectable()
 export class ListService {
@@ -15,9 +16,16 @@ export class ListService {
   async addNewList(userInputs: CreateListDto, req: Request): Promise<string> {
     const user = this.sharedUtilsService.getUserInfo(req)
     const userId = new Types.ObjectId(user.userId)
-    
+
     await this.listRepository.create({ ...userInputs, profile: userId })
 
     return `${userInputs.name} created.`
+  }
+
+  async getListById(listId: Types.ObjectId, req): Promise<List | null> {
+    const user = this.sharedUtilsService.getUserInfo(req)
+    const userId = new Types.ObjectId(user.userId)
+    
+    return await this.listRepository.findOne({ _id: listId, profile: userId })
   }
 }

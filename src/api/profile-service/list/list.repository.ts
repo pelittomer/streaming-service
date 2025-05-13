@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { List } from "./schemas/list.schema";
-import { Model } from "mongoose";
+import { List, ListDocument } from "./schemas/list.schema";
+import { Model, Types } from "mongoose";
 
 @Injectable()
 export class ListRepository {
@@ -13,4 +13,7 @@ export class ListRepository {
         await this.listModel.create(userInputs)
     }
 
+    async findOne(queryFields: Partial<Pick<ListDocument, '_id' | 'profile'>>): Promise<List | null> {
+        return await this.listModel.findOne(queryFields).populate('movie series').lean()
+    }
 }
