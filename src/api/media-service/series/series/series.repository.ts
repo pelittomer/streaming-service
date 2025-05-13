@@ -16,7 +16,7 @@ export class SeriesRepository {
         private readonly uploadService: UploadService,
     ) { }
 
-    async exists(queryFields: Partial<Series>): Promise<Pick<SeriesDocument, '_id'> | null> {
+    async exists(queryFields: Partial<Series | Pick<SeriesDocument, '_id'>>): Promise<Pick<SeriesDocument, '_id'> | null> {
         return await this.seriesModel.exists(queryFields)
     }
 

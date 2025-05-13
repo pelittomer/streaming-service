@@ -17,7 +17,7 @@ export class Season {
     poster: Types.ObjectId;
 
     @Prop({ type: String })
-    trailer: string;
+    trailer?: string;
 }
 
 export const SeasonSchema = SchemaFactory.createForClass(Season)
