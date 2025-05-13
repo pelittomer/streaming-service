@@ -1,12 +1,12 @@
-import { Prop, SchemaFactory } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 import { Actor } from "src/api/media-service/actor/schemas/actor.schema";
 import { Category } from "src/api/media-service/category/schemas/category.schema";
-import { Director } from "src/api/media-service/director/schemas/director.schema";
 import { Upload } from "src/api/upload-service/upload/schemas/upload.schema";
 
 export type SeriesDocument = Series & Document
 
+@Schema()
 export class Series {
     @Prop({ type: String, required: true, unique: true })
     title: string;
@@ -17,7 +17,7 @@ export class Series {
     @Prop({ type: Types.ObjectId, ref: Upload.name, required: true })
     poster: Types.ObjectId;
 
-    @Prop({ type: Types.ObjectId, ref: () => Director.name, required: true })
+    @Prop({ type: Types.ObjectId, ref: 'Director', required: true })
     directors: Types.ObjectId;
 
     @Prop({ type: [{ type: Types.ObjectId, ref: Actor.name }], default: [] })
