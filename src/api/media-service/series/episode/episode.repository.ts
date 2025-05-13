@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Episode, EpisodeDocument } from "./schemas/episode.schema";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 
 @Injectable()
 export class EpisodeRepository {
@@ -19,5 +19,9 @@ export class EpisodeRepository {
 
     async find(queryFields: Partial<Episode>): Promise<Episode[]> {
         return await this.episodeModel.find(queryFields)
+    }
+
+    async findById(episodeId: Types.ObjectId): Promise<Episode | null> {
+        return await this.episodeModel.findById(episodeId).lean()
     }
 }

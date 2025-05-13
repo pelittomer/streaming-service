@@ -29,4 +29,8 @@ export class EpisodeService {
     queryFields.season = new Types.ObjectId(queryFields.season)
     return await this.episodeRepository.find(queryFields)
   }
+
+  async getEpisodeById(episodeId: Types.ObjectId): Promise<Episode | null> {
+    return await this.episodeRepository.findById(episodeId)
+  }
 }

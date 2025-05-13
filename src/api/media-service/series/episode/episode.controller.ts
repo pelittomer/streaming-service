@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { EpisodeService } from './episode.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
@@ -6,6 +6,8 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/types';
 import { CreateEpisodeDto } from './dto/create-episode.dto';
 import { GetEpisodeDto } from './dto/get-episode.dto';
+import { ParseObjectIdPipe } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
 
 @Controller('episode')
 export class EpisodeController {
@@ -28,8 +30,9 @@ export class EpisodeController {
   }
 
   @Get(':id')
-  getEpisodeById() {
-    //Retrieves a specific series episode based on the provided ID.
-
+  getEpisodeById(
+    @Param('id', ParseObjectIdPipe) episodeId: Types.ObjectId
+  ) { 
+    return this.episodeService.getEpisodeById(episodeId)
   }
 }
