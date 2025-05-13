@@ -16,4 +16,8 @@ export class ListRepository {
     async findOne(queryFields: Partial<Pick<ListDocument, '_id' | 'profile'>>): Promise<List | null> {
         return await this.listModel.findOne(queryFields).populate('movie series').lean()
     }
+
+    async find(queryFields: Partial<List>): Promise<List[]> {
+        return await this.listModel.find(queryFields).lean()
+    }
 }

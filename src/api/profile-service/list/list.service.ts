@@ -25,7 +25,14 @@ export class ListService {
   async getListById(listId: Types.ObjectId, req): Promise<List | null> {
     const user = this.sharedUtilsService.getUserInfo(req)
     const userId = new Types.ObjectId(user.userId)
-    
+
     return await this.listRepository.findOne({ _id: listId, profile: userId })
+  }
+
+  async getAllLists(req: Request): Promise<List[]> {
+    const user = this.sharedUtilsService.getUserInfo(req)
+    const userId = new Types.ObjectId(user.userId)
+    
+    return await this.listRepository.find({ profile: userId })
   }
 }

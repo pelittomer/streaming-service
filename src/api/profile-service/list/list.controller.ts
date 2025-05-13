@@ -22,7 +22,7 @@ export class ListController {
   ) {
     return this.listService.addNewList(userInputs, req)
   }
-  
+
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Customer)
   @Get(':id')
@@ -33,11 +33,13 @@ export class ListController {
     return this.listService.getListById(listId, req)
   }
 
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Customer)
   @Get()
-  getLists() {
-    /*
-       Retrieves all lists belonging to the currently authenticated user.
-    */
+  getAllLists(
+    @Req() req: Request
+  ) {
+    return this.listService.getAllLists(req)
   }
 
   @Put('id')
