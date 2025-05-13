@@ -12,4 +12,8 @@ export class EpisodeRepository {
     async exists(queryFields: Partial<Episode | Pick<EpisodeDocument, '_id'>>): Promise<Pick<EpisodeDocument, '_id'> | null> {
         return await this.episodeModel.exists(queryFields)
     }
+
+    async create(userInputs: Partial<Episode>): Promise<void> {
+        await this.episodeModel.create(userInputs)
+    }
 }

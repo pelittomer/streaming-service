@@ -1,11 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Season } from "./schemas/season.schema";
+import { Season, SeasonDocument } from "./schemas/season.schema";
 import { Model, Types } from "mongoose";
 import { CreateSeasonDto } from "./dto/create-season.dto";
 import { SharedUtilsService } from "src/common/utils/shared-utils.service";
 import { UploadService } from "src/api/upload-service/upload/upload.service";
-import { GetSeasonDto } from "./dto/get-season.dto";
 
 @Injectable()
 export class SeasonRepository {
@@ -27,5 +26,9 @@ export class SeasonRepository {
 
     async find(queryFields: Partial<Season>): Promise<Pick<Season, 'sessionNumber'>[]> {
         return await this.seasonModel.find(queryFields).select('sessionNumber').lean()
+    }
+
+    async exists(queryFields: Partial<Season | Pick<SeasonDocument, '_id'>>): Promise<Pick<SeasonDocument, '_id'> | null> {
+        return await this.seasonModel.exists(queryFields)
     }
 }
