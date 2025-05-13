@@ -5,6 +5,7 @@ import { Model, Types } from "mongoose";
 import { CreateSeasonDto } from "./dto/create-season.dto";
 import { SharedUtilsService } from "src/common/utils/shared-utils.service";
 import { UploadService } from "src/api/upload-service/upload/upload.service";
+import { GetSeasonDto } from "./dto/get-season.dto";
 
 @Injectable()
 export class SeasonRepository {
@@ -22,5 +23,9 @@ export class SeasonRepository {
             }
             await this.seasonModel.create([{ ...userInputs, poster: posterId }], { session })
         })
+    }
+
+    async find(queryFields: Partial<Season>): Promise<Pick<Season, 'sessionNumber'>[]> {
+        return await this.seasonModel.find(queryFields).select('sessionNumber').lean()
     }
 }

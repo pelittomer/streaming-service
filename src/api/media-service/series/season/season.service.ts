@@ -2,6 +2,8 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { SeasonRepository } from './season.repository';
 import { CreateSeasonDto } from './dto/create-season.dto';
 import { SeriesRepository } from '../series/series.repository';
+import { GetSeasonDto } from './dto/get-season.dto';
+import { Season } from './schemas/season.schema';
 
 @Injectable()
 export class SeasonService {
@@ -21,4 +23,7 @@ export class SeasonService {
     return 'Season created successfully.'
   }
 
+  async getAllSeasons(queryFields: GetSeasonDto): Promise<Pick<Season, 'sessionNumber'>[]> {
+    return await this.seasonRepository.find(queryFields)
+  }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UploadedFile, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UploadedFile, UseGuards } from '@nestjs/common';
 import { SeasonService } from './season.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
@@ -6,6 +6,7 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/types';
 import { UploadImage } from 'src/common/decorators/upload-image.decorator';
 import { CreateSeasonDto } from './dto/create-season.dto';
+import { GetSeasonDto } from './dto/get-season.dto';
 
 @Controller('season')
 export class SeasonController {
@@ -23,7 +24,7 @@ export class SeasonController {
   }
 
   @Get()
-  getAllSeasons() {
-    //Retrieves a list of all available series seasons.
+  getAllSeasons(@Query() query: GetSeasonDto) {
+    return this.seasonService.getAllSeasons(query)
   }
 }
