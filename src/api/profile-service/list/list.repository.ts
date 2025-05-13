@@ -20,4 +20,12 @@ export class ListRepository {
     async find(queryFields: Partial<List>): Promise<List[]> {
         return await this.listModel.find(queryFields).lean()
     }
+
+    async exists(queryFields: Partial<List | Pick<ListDocument, '_id'>>): Promise<Pick<ListDocument, '_id'> | null> {
+        return await this.listModel.exists(queryFields)
+    }
+
+    async findOneAndUpdate(queryFields: Partial<List | Pick<ListDocument, '_id'>>, userInputs: Partial<List>): Promise<void> {
+        await this.listModel.findOneAndUpdate(queryFields, userInputs)
+    }
 }

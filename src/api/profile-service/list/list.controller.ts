@@ -8,6 +8,7 @@ import { CreateListDto } from './dto/create-list.dto';
 import { Request } from 'express';
 import { ParseObjectIdPipe } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
+import { PartialUpdateListDto } from './dto/update-list.dto';
 
 @Controller('list')
 export class ListController {
@@ -42,10 +43,14 @@ export class ListController {
     return this.listService.getAllLists(req)
   }
 
-  @Put('id')
-  updateList() {
-    /*
-       Updates the information of a specific list identified by the provided ID.
-    */
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Customer)
+  @Put(':id')
+  updateList(
+    @Param('id', ParseObjectIdPipe) listId: Types.ObjectId,
+    @Req() req: Request,
+    @Body() userInputs: PartialUpdateListDto
+  ) {
+    return this.listService.updateList(listId, req, userInputs)
   }
 }
