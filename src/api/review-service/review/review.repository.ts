@@ -2,6 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Review } from "./schema/review.schema";
 import { Model } from "mongoose";
+import { PopulatedReview } from "./types";
+import { User } from "src/api/user-service/user/schemas/user.schema";
 
 @Injectable()
 export class ReviewRepository {
@@ -13,4 +15,12 @@ export class ReviewRepository {
         await this.reviewModel.create(userInputs)
     }
 
+    async find(queryFields: Partial<Review>): Promise<PopulatedReview[]> {
+        return await this.reviewModel.find(queryFields)
+            .select<Pick<Review, 'comment' | 'user' | 'blur'>>('comment user blur')
+            .populate<{ user: Pick<User, 'username' | 'roles'> }>({
+                path: 'user',
+                select: 'username roles',
+            }).lean()
+    }
 }

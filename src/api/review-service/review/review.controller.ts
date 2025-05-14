@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ReviewService } from './review.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { Request } from 'express';
+import { PartialGetReviewDto } from './dto/get-review.dto';
 
 @Controller('review')
 export class ReviewController {
@@ -18,12 +19,10 @@ export class ReviewController {
   }
 
   @Get()
-  getReview() {
-    /*
-        * Fetches all reviews.
-        * This endpoint retrieves a list of all reviews stored in the database.
-        * It returns an array of review objects.
-     */
+  getAllReviews(
+    @Query() query: PartialGetReviewDto
+  ) {
+    return this.reviewService.getAllReviews(query)
   }
 
 }

@@ -6,6 +6,8 @@ import { SharedUtilsService } from 'src/common/utils/shared-utils.service';
 import { Types } from 'mongoose';
 import { MovieRepository } from 'src/api/media-service/movie/movie.repository';
 import { EpisodeRepository } from 'src/api/media-service/series/episode/episode.repository';
+import { PartialGetReviewDto } from './dto/get-review.dto';
+import { PopulatedReview } from './types';
 
 @Injectable()
 export class ReviewService {
@@ -46,4 +48,19 @@ export class ReviewService {
     return 'Review created successfully.'
   }
 
+  async getAllReviews(query: PartialGetReviewDto): Promise<PopulatedReview[]> {
+    const { movie, episode } = query
+
+    if (!movie && !episode) {
+      throw new BadRequestException('Movie or episode ID is required!')
+    }
+
+    await this.validateEntity(movie, this.movieRepository, 'Movie')
+    await this.validateEntity(episode, this.episodeRepository, 'Episode')
+
+    return await this.reviewRepository.find({
+      movie: movie ? new Types.ObjectId(movie) : undefined,
+      episode: episode ? new Types.ObjectId(episode) : undefined,
+    })
+  }
 }
