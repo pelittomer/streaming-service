@@ -8,6 +8,9 @@ export class ReviewRepository {
     constructor(
         @InjectModel(Review.name) private reviewModel: Model<Review>
     ) { }
-    
+
+    async create(userInputs: Partial<Review>): Promise<void> {
+        await this.reviewModel.create(userInputs)
+    }
 
 }
