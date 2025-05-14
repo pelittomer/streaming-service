@@ -1,13 +1,24 @@
-import { Controller, Delete, Get, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { FavoriteService } from './favorite.service';
+import { AuthGuard } from 'src/common/guards/auth.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { Role } from 'src/common/types';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { PartialCreateFavoriteDto } from './dto/create-favorite.dto';
+import { Request } from 'express';
 
 @Controller('favorite')
 export class FavoriteController {
   constructor(private readonly favoriteService: FavoriteService) { }
 
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Customer)
   @Post()
-  addFavorite() {
-    //Allows the authenticated user to add a new item to their favorites.
+  addFavorite(
+    @Body() userInputs: PartialCreateFavoriteDto,
+    @Req() req: Request
+  ) {
+    return this.favoriteService.addFavorite(userInputs, req)
   }
 
   @Delete(':id')
