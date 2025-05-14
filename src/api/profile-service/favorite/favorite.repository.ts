@@ -13,6 +13,10 @@ export class FavoriteRepository {
         await this.favoriteModel.create([userInputs], { session })
     }
 
+    async findOne(queryFields: Partial<Favorite>): Promise<Favorite | null> {
+        return await this.favoriteModel.findOne(queryFields).lean()
+    }
+
     async findOneAndUpdate(queryFields: Partial<Favorite | Pick<FavoriteDocument, '_id'>>, userInputs: Partial<Favorite>): Promise<void> {
         await this.favoriteModel.findOneAndUpdate(queryFields, userInputs)
     }

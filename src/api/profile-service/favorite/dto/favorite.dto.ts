@@ -15,4 +15,4 @@ class CreateFavoriteDto {
     series: Types.ObjectId;
 }
 
-export class PartialCreateFavoriteDto extends PartialType(CreateFavoriteDto) { }
+export class PartialFavoriteDto extends PartialType(CreateFavoriteDto) { }

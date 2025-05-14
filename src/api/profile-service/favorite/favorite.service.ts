@@ -1,6 +1,6 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { FavoriteRepository } from './favorite.repository';
-import { PartialCreateFavoriteDto } from './dto/create-favorite.dto';
+import { PartialFavoriteDto } from './dto/favorite.dto';
 import { Request } from 'express';
 import { SharedUtilsService } from 'src/common/utils/shared-utils.service';
 import { MovieRepository } from 'src/api/media-service/movie/movie.repository';
@@ -16,7 +16,7 @@ export class FavoriteService {
     private readonly sharedUtilsService: SharedUtilsService,
   ) { }
 
-  async addFavorite(userInputs: PartialCreateFavoriteDto, req: Request) {
+  async addFavorite(userInputs: PartialFavoriteDto, req: Request) {
     const { movie, series } = userInputs
     const user = this.sharedUtilsService.getUserInfo(req)
     const userId = new Types.ObjectId(user.userId)
@@ -36,16 +36,73 @@ export class FavoriteService {
     }
 
     if (series) {
-      const seriesExists = await this.seriesRepository.exists({ _id: movie })
+      const seriesExists = await this.seriesRepository.exists({ _id: series })
       if (!seriesExists) {
         throw new BadRequestException('Series not found.')
       }
       updateSet.series = series
     }
 
-    await this.favoriteRepository.findOneAndUpdate(updateQuery, updateSet)
+    if (Object.keys(updateSet).length > 0) {
+      await this.favoriteRepository.findOneAndUpdate(
+        { profile: userId },
+        { $addToSet: updateSet } as any
+      )
+
+      return `${movie ? 'Movie' : 'Series'} added to favorites successfully.`
+    }
 
     return `${movie ? 'Movie' : 'Series'} added to favorites successfully.`
   }
 
+
+  async removeFavoriteById(userInputs: PartialFavoriteDto, req: Request) {
+    const { movie, series } = userInputs
+    const user = this.sharedUtilsService.getUserInfo(req)
+    const userId = new Types.ObjectId(user.userId)
+
+    if (!movie && !series) {
+      throw new BadRequestException('Movie or series ID required to remove from favorites!')
+    }
+
+    const updateQuery: any = { profile: userId }
+    const updatePull: any = {}
+    let itemType: 'Movie' | 'Series' | null = null
+
+    const favoriteDocument = await this.favoriteRepository.findOne({ profile: userId })
+    if (!favoriteDocument) {
+      throw new NotFoundException('Favorite list not found for this user.')
+    }
+
+    if (movie) {
+      const movieObjectId = new Types.ObjectId(movie)
+      if (favoriteDocument.movie.find((item) => item.equals(movieObjectId))) {
+        updatePull.movie = movieObjectId
+        itemType = 'Movie'
+      } else {
+        throw new NotFoundException('Movie not found in favorites.')
+      }
+    }
+
+    if (series) {
+      const seriesObjectId = new Types.ObjectId(series)
+      if (favoriteDocument.series.find((item) => item.equals(seriesObjectId))) {
+        updatePull.series = seriesObjectId
+        itemType = 'Series'
+      } else {
+        throw new NotFoundException('Series not found in favorites.')
+      }
+    }
+
+    if (Object.keys(updatePull).length > 0) {
+      await this.favoriteRepository.findOneAndUpdate(
+        updateQuery,
+        { $pull: updatePull } as any
+      )
+      return `${itemType} removed from favorites successfully.`
+    }
+
+    return 'No items were removed from favorites.'
+
+  }
 }
