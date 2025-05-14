@@ -1,15 +1,19 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param, Res } from '@nestjs/common';
 import { UploadService } from './upload.service';
+import { ParseObjectIdPipe } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
+import { Response } from 'express';
 
 @Controller('upload')
 export class UploadController {
   constructor(private readonly uploadService: UploadService) { }
 
   @Get('img/:id')
-  getImage() {
-    /*
-      This function retrieves and returns an image based on a provided image ID. It's used to fetch a specific image from the system's storage using its unique identifier.
-    */
+  getImage(
+    @Param('id', ParseObjectIdPipe) imageId: Types.ObjectId,
+    @Res({ passthrough: true }) res: Response
+  ) {
+    return this.uploadService.getImage(imageId, res)
   }
 
   @Get('mov/:id')

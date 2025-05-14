@@ -18,6 +18,10 @@ export class UploadRepository {
         })
     }
 
+    async findById(imageId: Types.ObjectId): Promise<Upload | null> {
+        return await this.uploadModel.findById(imageId)
+    }
+
     async uploadLargeFile(uploadedFile: Express.Multer.File): Promise<string> {
         return new Promise((resolve, reject) => {
             const uploadStream = this.gridFSBucket.openUploadStream(uploadedFile.originalname, {

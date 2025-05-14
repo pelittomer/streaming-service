@@ -1,12 +1,21 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UploadRepository } from './upload.repository';
 import { ClientSession, Types } from 'mongoose';
+import { Response } from 'express';
 
 @Injectable()
 export class UploadService {
   constructor(
     private readonly uploadRepository: UploadRepository,
   ) { }
+
+  async getImage(imageId: Types.ObjectId, res: Response) {
+    const imageRecord = await this.uploadRepository.findById(imageId)
+    if (!imageRecord) throw new NotFoundException('Image not found.')
+
+    res.set('Content-Type', imageRecord.mimeType)
+    res.send(imageRecord.data)
+  }
 
   async createImage(uploadedImage: Express.Multer.File, session: ClientSession): Promise<Types.ObjectId> {
     const payload = {
