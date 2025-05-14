@@ -17,10 +17,11 @@ export class UploadController {
   }
 
   @Get('mov/:id')
-  getAndStreamVideo() {
-    /*
-        Serves a video stream from the database corresponding to the specified video ID. This endpoint is designed for streaming video content to the user.
-    */
+  getAndStreamVideo(
+    @Param('id', ParseObjectIdPipe) fileId: Types.ObjectId,
+    @Res() res: Response
+  ) {
+    this.uploadService.getAndStreamVideo(fileId,res)
   }
 
 }

@@ -46,7 +46,4 @@ export class UploadRepository {
     async findOneAndUpdate(imageId: Types.ObjectId, uploadedImage: Express.Multer.File, session: ClientSession): Promise<void> {
         await this.uploadModel.findOneAndUpdate({ _id: imageId }, { data: uploadedImage.buffer }, { session })
     }
-
-
-
 }

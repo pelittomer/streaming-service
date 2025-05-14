@@ -1,13 +1,21 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UploadRepository } from './upload.repository';
-import { ClientSession, Types } from 'mongoose';
+import { ClientSession, Connection, Types } from 'mongoose';
 import { Response } from 'express';
+import { Db, GridFSBucket } from 'mongodb';
+import { InjectConnection } from '@nestjs/mongoose';
 
 @Injectable()
 export class UploadService {
+  private gridFSBucket: GridFSBucket;
   constructor(
     private readonly uploadRepository: UploadRepository,
-  ) { }
+    @InjectConnection() private connection: Connection,
+  ) {
+    this.gridFSBucket = new GridFSBucket(this.connection.db as Db, {
+      bucketName: 'uploads',
+    })
+  }
 
   async getImage(imageId: Types.ObjectId, res: Response) {
     const imageRecord = await this.uploadRepository.findById(imageId)
@@ -40,6 +48,24 @@ export class UploadService {
     }
     const newData = await this.uploadRepository.create(payload)
     return newData._id as Types.ObjectId
+  }
+
+
+  async getAndStreamVideo(fileId: Types.ObjectId, res: Response) {
+    const fileRecord = await this.uploadRepository.findById(fileId)
+    if (!fileRecord) throw new NotFoundException('Image not found.')
+    const objectId = new Types.ObjectId(fileRecord.gridFsFileId)
+
+
+    const downloadStream = this.gridFSBucket.openDownloadStream(objectId)
+
+    res.setHeader('Content-Type', fileRecord.mimeType)
+    downloadStream.pipe(res)
+
+    return new Promise((resolve, reject) => {
+      downloadStream.on('end', resolve)
+      downloadStream.on('error', reject)
+    })
   }
 
 }
