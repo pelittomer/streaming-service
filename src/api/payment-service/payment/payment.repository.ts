@@ -8,4 +8,8 @@ export class PaymentRepository {
     constructor(
         @InjectModel(Payment.name) private paymentModel: Model<Payment>
     ) { }
+
+    async create(userInputs: Partial<Payment>): Promise<void> {
+        await this.paymentModel.create(userInputs)
+    }
 }

@@ -1,4 +1,4 @@
-import { Prop, SchemaFactory } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 import { User } from "src/api/user-service/user/schemas/user.schema";
 import { PaymentMethod, PaymentStatus, SubscriptionPackage } from "src/common/types";
@@ -30,6 +30,7 @@ interface RefundDetails {
 
 export type PaymentDocument = Payment & Document
 
+@Schema()
 export class Payment {
     @Prop({ type: String, enum: PaymentMethod })
     payment_method: PaymentMethod;
