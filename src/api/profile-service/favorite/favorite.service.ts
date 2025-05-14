@@ -6,6 +6,7 @@ import { SharedUtilsService } from 'src/common/utils/shared-utils.service';
 import { MovieRepository } from 'src/api/media-service/movie/movie.repository';
 import { SeriesRepository } from 'src/api/media-service/series/series/series.repository';
 import { Types } from 'mongoose';
+import { Favorite } from './schemas/favorite.schema';
 
 @Injectable()
 export class FavoriteService {
@@ -116,5 +117,12 @@ export class FavoriteService {
     await this.favoriteRepository.findOneAndUpdate(updateQuery, updateSet)
 
     return 'All items have been removed from your favorites.'
+  }
+
+  async getUserFavorites(req: Request): Promise<Favorite | null> {
+    const user = this.sharedUtilsService.getUserInfo(req)
+    const userId = new Types.ObjectId(user.userId)
+
+    return await this.favoriteRepository.findOneAndPopulate({ profile: userId })
   }
 }

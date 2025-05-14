@@ -40,8 +40,12 @@ export class FavoriteController {
     return this.favoriteService.removeAllFavorites(req)
   }
 
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Customer)
   @Get()
-  getUserFavorites() {
-    //Retrieves a list of all favorite items belonging to the currently authenticated user.
+  getUserFavorites(
+    @Req() req: Request
+  ) {
+    return this.favoriteService.getUserFavorites(req)
   }
 }

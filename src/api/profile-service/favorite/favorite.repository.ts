@@ -20,4 +20,8 @@ export class FavoriteRepository {
     async findOneAndUpdate(queryFields: Partial<Favorite | Pick<FavoriteDocument, '_id'>>, userInputs: Partial<Favorite>): Promise<void> {
         await this.favoriteModel.findOneAndUpdate(queryFields, userInputs)
     }
+
+    async findOneAndPopulate(queryFields: Partial<Favorite>): Promise<Favorite | null> {
+        return await this.favoriteModel.findOne(queryFields).populate('series movie').lean()
+    }
 }
