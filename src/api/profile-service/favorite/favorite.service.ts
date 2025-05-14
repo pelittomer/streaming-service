@@ -105,4 +105,16 @@ export class FavoriteService {
     return 'No items were removed from favorites.'
 
   }
+
+  async removeAllFavorites(req: Request): Promise<string> {
+    const user = this.sharedUtilsService.getUserInfo(req)
+    const userId = new Types.ObjectId(user.userId)
+
+    const updateQuery: any = { profile: userId }
+    const updateSet: any = { movie: [], series: [] }
+
+    await this.favoriteRepository.findOneAndUpdate(updateQuery, updateSet)
+
+    return 'All items have been removed from your favorites.'
+  }
 }

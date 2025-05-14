@@ -31,9 +31,13 @@ export class FavoriteController {
     return this.favoriteService.removeFavoriteById(query, req)
   }
 
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Customer)
   @Delete('all')
-  removeAllFavorites() {
-    //Removes all favorite items belonging to the currently authenticated user.
+  removeAllFavorites(
+    @Req() req: Request
+  ) {
+    return this.favoriteService.removeAllFavorites(req)
   }
 
   @Get()
