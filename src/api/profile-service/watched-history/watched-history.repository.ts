@@ -9,4 +9,10 @@ export class WatchedHistoryRepository {
         @InjectModel(WatchedHistory.name) private watchedHistoryModel: Model<WatchedHistory>
     ) { }
 
+    async findOneAndUpdate(
+        queryFields: Partial<WatchedHistory>,
+        userInputs: Pick<WatchedHistory, 'watchDuration'>
+    ): Promise<void> {
+        await this.watchedHistoryModel.findOneAndUpdate(queryFields, userInputs, { upsert: true })
+    }
 }

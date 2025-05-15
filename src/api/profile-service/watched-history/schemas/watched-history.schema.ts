@@ -8,11 +8,8 @@ export type WatchedHistoryDocument = WatchedHistory & Document
 
 @Schema({ timestamps: true })
 export class WatchedHistory {
-    @Prop({ type: Date, default: Date.now })
-    watchedAt: Date;
-
     @Prop({ type: Number, default: 0 })
-    progress: number;
+    watchDuration: number;
 
     @Prop({ type: Types.ObjectId, ref: Movie.name })
     movie?: Types.ObjectId;
