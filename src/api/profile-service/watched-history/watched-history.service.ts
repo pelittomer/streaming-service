@@ -5,6 +5,7 @@ import { Request } from 'express';
 import { SharedUtilsService } from 'src/common/utils/shared-utils.service';
 import { Types } from 'mongoose';
 import { WatchedHistory } from './schemas/watched-history.schema';
+import { PartialGetWatchedHistoryDto } from './dto/get-watched-history.dto';
 
 @Injectable()
 export class WatchedHistoryService {
@@ -34,5 +35,14 @@ export class WatchedHistoryService {
     const user = this.sharedUtilsService.getUserInfo(req)
     const userId = new Types.ObjectId(user.userId)
     return await this.watchedHistoryRepository.find({ profile: userId })
+  }
+
+  async getWatchedHistory(query: PartialGetWatchedHistoryDto, req: Request): Promise<WatchedHistory | null> {
+    const user = this.sharedUtilsService.getUserInfo(req)
+    const userId = new Types.ObjectId(user.userId)
+    if (query.episode) query.episode = new Types.ObjectId(query.episode)
+    if (query.movie) query.episode = new Types.ObjectId(query.movie)
+      
+    return await this.watchedHistoryRepository.findOne({ ...query, profile: userId })
   }
 }

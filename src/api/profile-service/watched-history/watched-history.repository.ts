@@ -21,4 +21,8 @@ export class WatchedHistoryRepository {
             .populate('movie episode')
             .lean()
     }
+
+    async findOne(queryFields: Partial<WatchedHistory>): Promise<WatchedHistory | null> {
+        return await this.watchedHistoryModel.findOne(queryFields).lean()
+    }
 }
