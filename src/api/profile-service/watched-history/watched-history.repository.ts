@@ -15,4 +15,10 @@ export class WatchedHistoryRepository {
     ): Promise<void> {
         await this.watchedHistoryModel.findOneAndUpdate(queryFields, userInputs, { upsert: true })
     }
+
+    async find(queryFields: Partial<WatchedHistory>): Promise<WatchedHistory[]> {
+        return await this.watchedHistoryModel.find(queryFields)
+            .populate('movie episode')
+            .lean()
+    }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { WatchedHistoryService } from './watched-history.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { CreateWatchedHistoryDto } from './dto/create-watched-history.dto';
@@ -15,6 +15,14 @@ export class WatchedHistoryController {
     @Req() req: Request
   ) {
     return this.watchedHistoryService.recordWatchedHistory(userInputs, req)
+  }
+
+  @UseGuards(AuthGuard)
+  @Get()
+  getAllWatchedHistory(
+    @Req() req: Request
+  ) {
+    return this.watchedHistoryService.getAllWatchedHistory(req)
   }
 
 }
