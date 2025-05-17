@@ -15,12 +15,6 @@ export class Profile {
     @Prop({ type: Types.ObjectId, ref: Upload.name })
     avatar?: Types.ObjectId;
 
-    @Prop({ type: Boolean, default: false })
-    isOnline: boolean;
-
-    @Prop({ type: Boolean, default: false })
-    isActive: boolean;
-
     @Prop({ types: String, required: true })
     user: Types.ObjectId;
 }

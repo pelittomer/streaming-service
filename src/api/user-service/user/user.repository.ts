@@ -40,4 +40,12 @@ export class UserRepository {
     async findCurrentUser(userId: Types.ObjectId): Promise<Omit<UserDocument, 'emailVerificationToken' | 'password'>> {
         return await this.userModel.findById(userId).select('-emailVerificationToken -password')
     }
+
+    async findByIdAndUpdate(queryFields: Pick<UserDocument, '_id'>, userInputs: Partial<User>): Promise<void> {
+        await this.userModel.findByIdAndUpdate(queryFields, userInputs)
+    }
+
+    async findOnlineUsers(onlineUserIds) {
+        return await this.userModel.find({ _id: { $in: onlineUserIds } }).select('username _id')
+    }
 }

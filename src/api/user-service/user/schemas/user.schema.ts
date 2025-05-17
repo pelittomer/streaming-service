@@ -15,15 +15,6 @@ export class User {
     @Prop({ type: String, required: true })
     password: string;
 
-    @Prop({ type: Boolean, default: false })
-    isEmailVerified: boolean;
-
-    @Prop({ type: String, default: null })
-    emailVerificationToken?: string;
-
-    @Prop({ type: Date, default: null })
-    emailVerificationTokenExpriesAt: Date;
-
     @Prop({ type: String, required: true, enum: Role, default: Role.Customer })
     roles: Role
 }

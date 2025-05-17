@@ -30,7 +30,7 @@ interface RefundDetails {
 
 export type PaymentDocument = Payment & Document
 
-@Schema()
+@Schema({ timestamps: true })
 export class Payment {
     @Prop({ type: String, enum: PaymentMethod })
     payment_method: PaymentMethod;
@@ -79,6 +79,9 @@ export class Payment {
 
     @Prop({ type: String, enum: SubscriptionPackage, default: SubscriptionPackage.SINGLE })
     subscriptionPackage: SubscriptionPackage;
+
+    @Prop({ type: Date })
+    subscriptionEndDate?: Date;
 
     @Prop({ type: Types.ObjectId, ref: User.name, required: true })
     user: Types.ObjectId;

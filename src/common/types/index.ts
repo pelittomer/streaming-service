@@ -59,3 +59,15 @@ export interface UserInfo {
     username: string;
     roles: Role
 }
+
+enum MaxConnections {
+    SINGLE = 1,
+    FAMILY = 3,
+    PREMIUM = 5,
+}
+
+export const maxConnections: Record<SubscriptionPackage, MaxConnections> = {
+    [SubscriptionPackage.SINGLE]: MaxConnections.SINGLE,
+    [SubscriptionPackage.FAMILY]: MaxConnections.FAMILY,
+    [SubscriptionPackage.PREMIUM]: MaxConnections.PREMIUM,
+}

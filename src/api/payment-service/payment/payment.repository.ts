@@ -12,4 +12,11 @@ export class PaymentRepository {
     async create(userInputs: Partial<Payment>): Promise<void> {
         await this.paymentModel.create(userInputs)
     }
+
+    async findSubscription(queryFields: Partial<Payment>): Promise<Payment | null> {
+        return await this.paymentModel.findOne(queryFields)
+            .sort({ createdAt: -1 })
+            .select('subscriptionPackage subscriptionEndDate')
+            .lean()
+    }
 }
