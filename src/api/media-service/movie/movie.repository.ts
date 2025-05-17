@@ -24,7 +24,7 @@ export class MovieRepository {
 
     async create(userInputs: CreateMovieDto, uploadedFile: Express.Multer.File): Promise<void> {
         await this.sharedUtilsService.executeTransaction(async (session) => {
-            const posterId = await this.uploadService.createImage(uploadedFile, session)
+            const posterId = await this.uploadService.createFile(uploadedFile, session)
             await this.movieModel.create({
                 ...userInputs,
                 poster: posterId

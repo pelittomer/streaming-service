@@ -20,7 +20,7 @@ export class ProfileRepository {
 
     async create(queryFields: Partial<Profile>, uploadedImage: Express.Multer.File): Promise<void> {
         await this.sharedUtilsService.executeTransaction(async (session) => {
-            const imageId = await this.uploadService.createImage(uploadedImage, session)
+            const imageId = await this.uploadService.createFile(uploadedImage, session)
             await this.profileModel.create([{
                 ...queryFields,
                 avatar: imageId
@@ -47,9 +47,9 @@ export class ProfileRepository {
 
             if (uploadedImage) {
                 if (avatar) {
-                    await this.uploadService.updateExistingImage(uploadedImage, avatar, session)
+                    await this.uploadService.updateExistingFile(uploadedImage, avatar)
                 } else {
-                    const newImageId = await this.uploadService.createImage(uploadedImage, session)
+                    const newImageId = await this.uploadService.createFile(uploadedImage, session)
                     updateData.avatar = newImageId
                 }
             }

@@ -16,7 +16,7 @@ export class ActorRepository {
 
     async create(userInputs: CreateActorDto, uploadedImage: Express.Multer.File): Promise<void> {
         await this.sharedUtilsService.executeTransaction(async (session) => {
-            const imageId = await this.uploadService.createImage(uploadedImage, session)
+            const imageId = await this.uploadService.createFile(uploadedImage, session)
             await this.actorModel.create([{
                 ...userInputs,
                 profilePicture: imageId

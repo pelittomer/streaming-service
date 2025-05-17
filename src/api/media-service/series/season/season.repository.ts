@@ -18,7 +18,7 @@ export class SeasonRepository {
         let posterId: Types.ObjectId | undefined
         await this.sharedUtilsService.executeTransaction(async (session) => {
             if (uploadedFile) {
-                posterId = await this.uploadService.createImage(uploadedFile, session)
+                posterId = await this.uploadService.createFile(uploadedFile, session)
             }
             await this.seasonModel.create([{ ...userInputs, poster: posterId }], { session })
         })

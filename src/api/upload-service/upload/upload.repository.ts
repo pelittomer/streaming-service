@@ -18,8 +18,8 @@ export class UploadRepository {
         })
     }
 
-    async findById(imageId: Types.ObjectId): Promise<Upload | null> {
-        return await this.uploadModel.findById(imageId)
+    async findById(fileId: Types.ObjectId): Promise<Upload | null> {
+        return await this.uploadModel.findById(fileId)
     }
 
     async uploadLargeFile(uploadedFile: Express.Multer.File): Promise<string> {
@@ -43,7 +43,7 @@ export class UploadRepository {
         return newData
     }
 
-    async findOneAndUpdate(imageId: Types.ObjectId, uploadedImage: Express.Multer.File, session: ClientSession): Promise<void> {
-        await this.uploadModel.findOneAndUpdate({ _id: imageId }, { data: uploadedImage.buffer }, { session })
+    async findOneAndUpdate(fileId: Types.ObjectId, data: { data: Buffer }): Promise<void> {
+        await this.uploadModel.findOneAndUpdate({ _id: fileId }, data)
     }
 }

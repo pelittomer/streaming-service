@@ -22,7 +22,7 @@ export class SeriesRepository {
 
     async create(userInputs: Partial<Series>, uploadedFile: Express.Multer.File): Promise<void> {
         await this.sharedUtilsService.executeTransaction(async (session) => {
-            const poster = await this.uploadService.createImage(uploadedFile, session)
+            const poster = await this.uploadService.createFile(uploadedFile, session)
             await this.seriesModel.create([{ ...userInputs, poster }], { session })
         })
     }
