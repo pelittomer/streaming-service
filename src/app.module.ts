@@ -23,7 +23,7 @@ import { ReviewModule } from './api/review-service/review/review.module';
 import { WatchedHistoryModule } from './api/profile-service/watched-history/watched-history.module';
 import { ActorModule } from './api/media-service/actor/actor.module';
 import { DirectorModule } from './api/media-service/director/director.module';
-import { OnlineStatusGateway } from './online-status/online-status.gateway';
+import { OnlineStatusGateway } from './common/gateways/online-status/online-status.gateway';
 
 @Module({
   imports: [
