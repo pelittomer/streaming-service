@@ -7,13 +7,14 @@ import { ReviewRepository } from './review.repository';
 import { SharedUtilsModule } from 'src/common/utils/shared-utils.module';
 import { MovieModule } from 'src/api/media-service/movie/movie.module';
 import { EpisodeModule } from 'src/api/media-service/series/episode/episode.module';
+import { WatchedHistoryModule } from 'src/api/profile-service/watched-history/watched-history.module';
 
 @Module({
   controllers: [ReviewController],
   providers: [ReviewService, ReviewRepository],
   imports: [
     MongooseModule.forFeature([{ name: Review.name, schema: ReviewSchema }]),
-    SharedUtilsModule, MovieModule, EpisodeModule
+    SharedUtilsModule, MovieModule, EpisodeModule, WatchedHistoryModule
   ],
   exports: []
 })

@@ -19,10 +19,7 @@ export class ReviewController {
   }
 
   @Get()
-  getAllReviews(
-    @Query() query: PartialGetReviewDto
-  ) {
+  getAllReviews(@Query() query: PartialGetReviewDto) {
     return this.reviewService.getAllReviews(query)
   }
-
 }
