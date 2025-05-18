@@ -5,10 +5,19 @@ import { Response } from 'express';
 import { Db, GridFSBucket } from 'mongodb';
 import { InjectConnection } from '@nestjs/mongoose';
 import { UploadProducerService } from 'src/common/queues/upload/upload-producer.service';
+import { Upload } from './schemas/upload.schema';
+
+interface TFileMetadata {
+  name: string;
+  mimeType: string;
+  data?: Buffer;
+  gridFsFileId?: string;
+}
 
 @Injectable()
 export class UploadService {
   private gridFSBucket: GridFSBucket;
+
   constructor(
     private readonly uploadRepository: UploadRepository,
     private readonly uploadProducerService: UploadProducerService,
@@ -19,7 +28,7 @@ export class UploadService {
     })
   }
 
-  private buildFileMetadata(file: Express.Multer.File, gridFsFileId?: string) {
+  private buildFileMetadata(file: Express.Multer.File, gridFsFileId?: string): TFileMetadata {
     return {
       name: file.originalname,
       mimeType: file.mimetype,
@@ -27,7 +36,7 @@ export class UploadService {
     }
   }
 
-  private async verifyFilePresence(fileId: Types.ObjectId) {
+  private async verifyFilePresence(fileId: Types.ObjectId): Promise<Upload> {
     const fileRecord = await this.uploadRepository.findById(fileId)
     if (!fileRecord) throw new NotFoundException('File not found.')
     return fileRecord
@@ -39,15 +48,21 @@ export class UploadService {
     res.send(fileRecord.data)
   }
 
-  async createFile(uploadedFile: Express.Multer.File, session: ClientSession): Promise<Types.ObjectId> {
+  async createFile(
+    uploadedFile: Express.Multer.File,
+    session: ClientSession
+  ): Promise<Types.ObjectId> {
     const payload = this.buildFileMetadata(uploadedFile)
     const newData = await this.uploadRepository.create(payload, session)
     await this.uploadProducerService.uploadFile({ fileId: newData._id as Types.ObjectId, uploadedFile })
     return newData._id as Types.ObjectId
   }
 
-  async updateExistingFile(uploadedFile: Express.Multer.File, imageId: Types.ObjectId): Promise<void> {
-    await this.uploadProducerService.uploadFile({ fileId: imageId as Types.ObjectId, uploadedFile })
+  async updateExistingFile(
+    uploadedFile: Express.Multer.File,
+    fileId: Types.ObjectId
+  ): Promise<void> {
+    await this.uploadProducerService.uploadFile({ fileId: fileId as Types.ObjectId, uploadedFile })
   }
 
   async uploadToModelWithGridFS(uploadedFile: Express.Multer.File) {

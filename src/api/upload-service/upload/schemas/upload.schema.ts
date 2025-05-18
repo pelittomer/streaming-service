@@ -11,10 +11,10 @@ export class Upload {
     @Prop({ type: String, required: true })
     mimeType: string;
 
-    @Prop({ type: Buffer})
+    @Prop({ type: Buffer })
     data: Buffer;
 
-    @Prop()
+    @Prop({ type: String })
     gridFsFileId: string;
 }
 
