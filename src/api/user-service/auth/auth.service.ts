@@ -3,29 +3,50 @@ import { RegisterDto } from './dto/register.dto';
 import { UserRepository } from '../user/user.repository';
 import { compare, genSalt, hash } from 'bcrypt';
 import { LoginDto } from './dto/login.dto';
-import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
-import { AppConfig } from 'src/config/type';
 import { CookieOptions, Request, Response } from 'express';
+import { JwtPayload, JwtService } from 'src/modules/jwt/jwt.service';
+import { UserDocument } from '../user/schemas/user.schema';
+import { Types } from 'mongoose';
+import * as ErrorMessages from "./constants/error-messages.constant"
 
 @Injectable()
 export class AuthService {
     private readonly logger = new Logger(AuthService.name)
-    private readonly accessTokenExpiresIn = '15m'
-    private readonly refreshTokenExpiresIn = '7d'
-    private readonly jwtCookieOptions: CookieOptions = {
+    private readonly clearJwtCookieOptions: CookieOptions = {
         httpOnly: true,
         secure: true,
         sameSite: 'none',
+    }
+    private readonly jwtCookieOptions: CookieOptions = {
+        ...this.clearJwtCookieOptions,
         maxAge: 7 * 24 * 60 * 60 * 1000,
     }
 
     constructor(
         private readonly userRepository: UserRepository,
         private readonly jwtService: JwtService,
-        private readonly configService: ConfigService<AppConfig>
     ) { }
 
+    private createJwtPayload(user: UserDocument): JwtPayload {
+        return {
+            username: user.username,
+            userId: user._id as Types.ObjectId,
+            roles: user.roles,
+        }
+    }
+
+    private async verifyPassword(password: string, hashedPassword: string): Promise<boolean> {
+        const match = await compare(password, hashedPassword)
+        if (!match) {
+            throw new UnauthorizedException(ErrorMessages.INVALID_PASSWORD_ERROR)
+        }
+        return true
+    }
+
+    private async hashPassword(password: string): Promise<string> {
+        const salt = await genSalt()
+        return await hash(password, salt)
+    }
 
     async register(userInputs: RegisterDto): Promise<string> {
         const { username, email, password } = userInputs
@@ -33,23 +54,19 @@ export class AuthService {
         const userExists = await this.userRepository.findByOrQuery({ username, email })
         if (userExists) {
             if (userExists.username === username) {
-                throw new BadRequestException('This username is already in use. Please choose another username.')
+                throw new BadRequestException(ErrorMessages.USERNAME_EXISTS_ERROR)
             } else if (userExists.email === email) {
-                throw new BadRequestException('This email address is already registered. Please use a different email address.')
+                throw new BadRequestException(ErrorMessages.EMAIL_EXISTS_ERROR)
             }
         }
 
-        //hash the password
-        const salt = await genSalt()
-        const hashedPassword = await hash(password, salt)
-
+        const hashedPassword = await this.hashPassword(password)
         const user = await this.userRepository.create({
             ...userInputs,
             password: hashedPassword
         })
 
         this.logger.log(`User registration completed successfully: username=${username}, userId=${user._id}.`)
-
         return 'Your registration is complete. You can now log in.'
     }
 
@@ -58,73 +75,50 @@ export class AuthService {
 
         const foundUser = await this.userRepository.findOne({ email })
         if (!foundUser) {
-            throw new NotFoundException('A user with the entered email address was not found. Please check your email address or register.')
+            throw new NotFoundException(ErrorMessages.USER_NOT_FOUND_ERROR)
         }
 
-        const matchPassword = await compare(password, foundUser.password)
-        if (!matchPassword) {
-            throw new UnauthorizedException('The password you entered is incorrect. Please check your password and try again.')
-        }
+        await this.verifyPassword(password, foundUser.password)
 
-        const payload = {
-            username: foundUser.username,
-            userId: foundUser._id,
-            roles: foundUser.roles
-        }
-
-        const accessToken = this.jwtService.sign(payload, { expiresIn: this.accessTokenExpiresIn })
-        const refreshToken = this.jwtService.sign(payload, { expiresIn: this.refreshTokenExpiresIn })
+        const payload = this.createJwtPayload(foundUser)
+        const accessToken = await this.jwtService.signAccessToken(payload)
+        const refreshToken = await this.jwtService.signRefreshToken(payload)
 
         res.cookie('jwt', refreshToken, this.jwtCookieOptions)
-
         return { accessToken }
     }
 
     logout(req: Request, res: Response): string | undefined {
-        const cookies = req.cookies
-        if (!cookies.jwt) {
+        const token = req.cookies.jwt
+        if (!token) {
             res.sendStatus(HttpStatus.OK)
             return
         }
-        res.clearCookie('jwt', {
-            httpOnly: true,
-            sameSite: 'none',
-            secure: true
-        })
-
+        res.clearCookie('jwt', this.clearJwtCookieOptions)
         return 'You have successfully logged out.'
     }
 
-    async refresh(req: Request, res: Response): Promise<{ accessToken: string }> {
-        const cookies = req.cookies
-        if (!cookies.jwt) {
-            throw new UnauthorizedException('The information required to refresh your session was not found. Please log in again.')
+    async refresh(req: Request): Promise<{ accessToken: string }> {
+        const refreshToken = req.cookies.jwt
+        if (!refreshToken) {
+            throw new UnauthorizedException(ErrorMessages.REFRESH_TOKEN_MISSING_ERROR)
         }
-        const refreshToken = cookies.jwt
 
         try {
-            const decoded = await this.jwtService.verifyAsync(refreshToken, {
-                secret: this.configService.get('auth.secret_key', { infer: true }),
-            })
-
+            const decoded = await this.jwtService.decodedToken(refreshToken)
             const foundUser = await this.userRepository.findById(decoded.userId)
             if (!foundUser) {
-                throw new UnauthorizedException('Your user account could not be verified. Please log in again.')
+                throw new UnauthorizedException(ErrorMessages.USER_VERIFICATION_FAILED_ERROR)
             }
 
-            const payload = {
-                username: foundUser.username,
-                userId: foundUser._id,
-                roles: foundUser.roles,
-            }
-
-            const accessToken = this.jwtService.sign(payload, { expiresIn: this.accessTokenExpiresIn })
+            const payload = this.createJwtPayload(foundUser)
+            const accessToken = await this.jwtService.signAccessToken(payload)
             return { accessToken }
         } catch (error) {
             if (error.name === 'TokenExpiredError') {
-                throw new ForbiddenException('Your session has expired. Please log in again.')
+                throw new ForbiddenException(ErrorMessages.SESSION_EXPIRED_ERROR)
             } else {
-                throw new ForbiddenException('Your session could not be verified. Please log in again.')
+                throw new ForbiddenException(ErrorMessages.SESSION_VERIFICATION_FAILED_ERROR)
             }
         }
     }

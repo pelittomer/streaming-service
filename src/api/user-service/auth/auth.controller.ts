@@ -9,9 +9,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) { }
 
   @Post('sign-up')
-  signUp(
-    @Body() userInputs: RegisterDto
-  ) {
+  signUp(@Body() userInputs: RegisterDto) {
     return this.authService.register(userInputs)
   }
 
@@ -32,10 +30,7 @@ export class AuthController {
   }
 
   @Get('refresh')
-  refresh(
-    @Req() req: Request,
-    @Res({ passthrough: true }) res: Response
-  ) {
-    return this.authService.refresh(req, res)
+  refresh(@Req() req: Request) {
+    return this.authService.refresh(req)
   }
 }

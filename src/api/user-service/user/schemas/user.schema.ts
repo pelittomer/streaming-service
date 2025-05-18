@@ -16,7 +16,7 @@ export class User {
     password: string;
 
     @Prop({ type: String, required: true, enum: Role, default: Role.Customer })
-    roles: Role
+    roles: Role;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)
