@@ -24,7 +24,18 @@ export class PaymentRepository {
         return await this.paymentModel.findById(paymentId)
     }
 
-    async findByIdAndUpdate(paymentId: Types.ObjectId, userInputs: Partial<Payment>): Promise<void> {
+    async findByIdAndUpdate(
+        paymentId: Types.ObjectId,
+        userInputs: Partial<Payment>
+    ): Promise<void> {
         await this.paymentModel.findByIdAndUpdate(paymentId, userInputs)
+    }
+
+    async find(
+        queryFields: Partial<Payment | any>
+    ): Promise<Pick<PaymentDocument, '_id' | 'subscriptionEndDate'>[]> {
+        return await this.paymentModel.find(queryFields)
+            .select('subscriptionEndDate')
+            .lean()
     }
 }

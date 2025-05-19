@@ -23,6 +23,7 @@ import { WatchedHistoryModule } from './api/profile-service/watched-history/watc
 import { ActorModule } from './api/media-service/actor/actor.module';
 import { DirectorModule } from './api/media-service/director/director.module';
 import { OnlineStatusGateway } from './common/gateways/online-status/online-status.gateway';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { OnlineStatusGateway } from './common/gateways/online-status/online-stat
         secret: configService.get('auth.secret_key', { infer: true })
       })
     }),
+    ScheduleModule.forRoot(),
     UserModule,
     AuthModule,
     ProfileModule,

@@ -20,5 +20,4 @@ export class PaymentController {
   ) {
     return this.paymentService.addPayment(userInputs, req)
   }
-
 }

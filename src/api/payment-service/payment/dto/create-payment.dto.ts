@@ -1,40 +1,64 @@
-import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { IsBoolean, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { PaymentMethod, SubscriptionPackage } from 'src/common/types';
 import { ApiProperty } from '@nestjs/swagger';
 
 class CardDetailsDto {
-    @ApiProperty({ description: 'Credit card number', example: '****-****-****-1234' })
+    @ApiProperty({
+        description: 'Credit card number',
+        example: '****-****-****-1234'
+    })
     @IsString()
     card_number: string;
 
-    @ApiProperty({ description: 'Name on the credit card', example: 'John Doe' })
+    @ApiProperty({
+        description: 'Name on the credit card',
+        example: 'John Doe'
+    })
     @IsString()
     card_holder_name: string;
 
-    @ApiProperty({ description: 'Credit card expiry month', example: 12 })
+    @ApiProperty({
+        description: 'Credit card expiry month',
+        example: 12
+    })
     @IsNumber()
     expiry_month: number;
 
-    @ApiProperty({ description: 'Credit card expiry year', example: 2025 })
+    @ApiProperty({
+        description: 'Credit card expiry year',
+        example: 2025
+    })
     @IsNumber()
     expiry_year: number;
 }
 
 class EftDetailsDto {
-    @ApiProperty({ description: 'Name of the sender for EFT', example: 'John Doe' })
+    @ApiProperty({
+        description: 'Name of the sender for EFT',
+        example: 'John Doe'
+    })
     @IsString()
     sender_name: string;
 
-    @ApiProperty({ description: 'Bank of the sender for EFT', example: 'Garanti BBVA' })
+    @ApiProperty({
+        description: 'Bank of the sender for EFT',
+        example: 'Garanti BBVA'
+    })
     @IsString()
     sender_bank: string;
 
-    @ApiProperty({ description: 'Bank of the receiver for EFT', example: 'İş Bankası' })
+    @ApiProperty({
+        description: 'Bank of the receiver for EFT',
+        example: 'İş Bankası'
+    })
     @IsString()
     receiver_bank: string;
 
-    @ApiProperty({ description: 'Date of the EFT transfer', example: '2025-05-01T10:00:00.000Z' })
+    @ApiProperty({
+        description: 'Date of the EFT transfer',
+        example: '2025-05-01T10:00:00.000Z'
+    })
     @Type(() => Date)
     transfer_date: Date;
 }
@@ -74,7 +98,10 @@ class PaymentDetailsDto {
 }
 
 export class CreatePaymentDto {
-    @ApiProperty({ description: 'Payment method (e.g., CREDIT_CARD, EFT)', example: PaymentMethod.CreditCard })
+    @ApiProperty({
+        description: 'Payment method (e.g., CREDIT_CARD, EFT)',
+        example: PaymentMethod.CreditCard
+    })
     @IsEnum(PaymentMethod)
     @IsNotEmpty()
     payment_method: PaymentMethod;
@@ -100,4 +127,13 @@ export class CreatePaymentDto {
     })
     @IsEnum(SubscriptionPackage)
     subscriptionPackage: SubscriptionPackage;
+
+    @ApiProperty({
+        description: 'Enable or disable auto-renewal for the subscription',
+        default: false,
+        required: false
+    })
+    @IsBoolean()
+    @IsOptional()
+    autoRenewEnabled: boolean;
 }

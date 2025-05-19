@@ -83,6 +83,9 @@ export class Payment {
     @Prop({ type: Date })
     subscriptionEndDate?: Date;
 
+    @Prop({ type: Boolean, default: false })
+    autoRenewEnabled: boolean;
+
     @Prop({ type: Types.ObjectId, ref: User.name, required: true })
     user: Types.ObjectId;
 }
