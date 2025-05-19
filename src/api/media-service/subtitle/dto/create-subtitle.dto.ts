@@ -1,15 +1,14 @@
-import { IsMongoId, IsOptional, IsString } from "class-validator";
-import { Types } from "mongoose";
+import { IsString } from "class-validator";
+import { GetSubtitleDto } from "./get-subtitle.dto";
+import { ApiProperty } from "@nestjs/swagger";
 
-export class CreateSubtitleDto {
-    @IsMongoId()
-    @IsOptional()
-    movie: Types.ObjectId;
-
-    @IsMongoId()
-    @IsOptional()
-    episode: Types.ObjectId;
-
+export class CreateSubtitleDto extends GetSubtitleDto {
+    @ApiProperty({
+        description: 'The language of the subtitle',
+        type: String,
+        example: 'en',
+        required: true
+    })
     @IsString()
     language: string;
 }

@@ -16,18 +16,28 @@ export class SeriesRepository {
         private readonly uploadService: UploadService,
     ) { }
 
-    async exists(queryFields: Partial<Series | Pick<SeriesDocument, '_id'>>): Promise<Pick<SeriesDocument, '_id'> | null> {
+    async exists(
+        queryFields: Partial<Series | Pick<SeriesDocument, '_id'>>
+    ): Promise<Pick<SeriesDocument, '_id'> | null> {
         return await this.seriesModel.exists(queryFields)
     }
 
-    async create(userInputs: Partial<Series>, uploadedFile: Express.Multer.File): Promise<void> {
+    async create(
+        userInputs: Partial<Series>,
+        uploadedFile: Express.Multer.File
+    ): Promise<void> {
         await this.sharedUtilsService.executeTransaction(async (session) => {
             const poster = await this.uploadService.createFile(uploadedFile, session)
             await this.seriesModel.create([{ ...userInputs, poster }], { session })
         })
     }
 
-    async find(limit: number, startIndex: number, filter: any, sortCriteria: any): Promise<Pick<SeriesDocument, '_id' | 'title' | 'synopsis' | 'rate' | 'poster'>[]> {
+    async find(
+        limit: number,
+        startIndex: number,
+        filter: any,
+        sortCriteria: any
+    ): Promise<Pick<SeriesDocument, '_id' | 'title' | 'synopsis' | 'rate' | 'poster'>[]> {
         return this.seriesModel.find(filter)
             .sort(sortCriteria)
             .skip(startIndex)

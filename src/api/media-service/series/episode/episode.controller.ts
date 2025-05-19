@@ -16,23 +16,17 @@ export class EpisodeController {
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Admin)
   @Post()
-  addEpisode(
-    @Body() userInputs: CreateEpisodeDto
-  ) {
+  addEpisode(@Body() userInputs: CreateEpisodeDto) {
     return this.episodeService.addEpisode(userInputs)
   }
 
   @Get()
-  getAllEpisodes(
-    @Query() query: GetEpisodeDto
-  ) {
+  getAllEpisodes(@Query() query: GetEpisodeDto) {
     return this.episodeService.getAllEpisode(query)
   }
 
   @Get(':id')
-  getEpisodeById(
-    @Param('id', ParseObjectIdPipe) episodeId: Types.ObjectId
-  ) { 
+  getEpisodeById(@Param('id', ParseObjectIdPipe) episodeId: Types.ObjectId) {
     return this.episodeService.getEpisodeById(episodeId)
   }
 }

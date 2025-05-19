@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { SubtitleService } from './subtitle.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from 'src/common/guards/auth.guard';
@@ -20,16 +20,11 @@ export class SubtitleController {
     @Body() userInputs: CreateSubtitleDto,
     @UploadedFile() uploadedFile: Express.Multer.File
   ) {
-    if (!uploadedFile.mimetype.startsWith('text/')) {
-      throw new BadRequestException('The uploaded file must be in VTT or SRT format.')
-    }
     return this.subtitleService.addSubtitle(userInputs, uploadedFile)
   }
 
   @Get()
-  getAllSubtitles(
-    @Query() query: PartialGetSubtitleDto
-  ) {
+  getAllSubtitles(@Query() query: PartialGetSubtitleDto) {
     return this.subtitleService.getAllSubtitles(query)
   }
 

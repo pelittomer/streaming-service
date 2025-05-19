@@ -11,12 +11,17 @@ export class AudioRepository {
         private readonly uploadService: UploadService,
     ) { }
 
-    async create(userInputs: Partial<Pick<Audio, 'episode' | 'movie' | 'language'>>, uploadedFile: Express.Multer.File): Promise<void> {
+    async create(
+        userInputs: Partial<Pick<Audio, 'episode' | 'movie' | 'language'>>,
+        uploadedFile: Express.Multer.File
+    ): Promise<void> {
         const fileId = await this.uploadService.uploadToModelWithGridFS(uploadedFile)
         await this.audioModel.create({ ...userInputs, audioFile: fileId })
     }
 
-    async find(queryFields: Partial<Pick<Audio, 'movie' | 'episode'>>): Promise<Pick<AudioDocument, '_id' | 'language' | 'audioFile'>[]> {
+    async find(
+        queryFields: Partial<Pick<Audio, 'movie' | 'episode'>>
+    ): Promise<Pick<AudioDocument, '_id' | 'language' | 'audioFile'>[]> {
         return await this.audioModel.find(queryFields).select('language audioFile').lean()
     }
 }

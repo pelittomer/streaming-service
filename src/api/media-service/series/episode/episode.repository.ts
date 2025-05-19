@@ -9,7 +9,9 @@ export class EpisodeRepository {
         @InjectModel(Episode.name) private episodeModel: Model<Episode>
     ) { }
 
-    async exists(queryFields: Partial<Episode | Pick<EpisodeDocument, '_id'>>): Promise<Pick<EpisodeDocument, '_id'> | null> {
+    async exists(
+        queryFields: Partial<Episode | Pick<EpisodeDocument, '_id'>>
+    ): Promise<Pick<EpisodeDocument, '_id'> | null> {
         return await this.episodeModel.exists(queryFields)
     }
 

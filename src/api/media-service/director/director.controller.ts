@@ -24,7 +24,6 @@ export class DirectorController {
     return this.directorService.addDirector(userInputs, uploadedImage)
   }
 
-
   @Get()
   getAllDirectors() {
     return this.directorService.getAllDirectors()

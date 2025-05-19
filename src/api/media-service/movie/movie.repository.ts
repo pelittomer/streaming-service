@@ -9,7 +9,6 @@ import { Category } from "../category/schemas/category.schema";
 import { Director } from "../director/schemas/director.schema";
 import { Actor } from "../actor/schemas/actor.schema";
 
-
 @Injectable()
 export class MovieRepository {
     constructor(
@@ -18,11 +17,16 @@ export class MovieRepository {
         private readonly sharedUtilsService: SharedUtilsService,
     ) { }
 
-    async exists(queryFields: Partial<Movie | Pick<MovieDocument, '_id'>>): Promise<Pick<MovieDocument, '_id'> | null> {
+    async exists(
+        queryFields: Partial<Movie | Pick<MovieDocument, '_id'>>
+    ): Promise<Pick<MovieDocument, '_id'> | null> {
         return await this.movieModel.exists(queryFields)
     }
 
-    async create(userInputs: CreateMovieDto, uploadedFile: Express.Multer.File): Promise<void> {
+    async create(
+        userInputs: CreateMovieDto,
+        uploadedFile: Express.Multer.File
+    ): Promise<void> {
         await this.sharedUtilsService.executeTransaction(async (session) => {
             const posterId = await this.uploadService.createFile(uploadedFile, session)
             await this.movieModel.create({
@@ -32,7 +36,12 @@ export class MovieRepository {
         })
     }
 
-    async find(limit: number, startIndex: number, filter: any, sortCriteria: any): Promise<Pick<MovieDocument, '_id' | 'title' | 'synopsis' | 'rate' | 'poster'>[]> {
+    async find(
+        limit: number,
+        startIndex: number,
+        filter: any,
+        sortCriteria: any
+    ): Promise<Pick<MovieDocument, '_id' | 'title' | 'synopsis' | 'rate' | 'poster'>[]> {
         return this.movieModel.find(filter)
             .sort(sortCriteria)
             .skip(startIndex)

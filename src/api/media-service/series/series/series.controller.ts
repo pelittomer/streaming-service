@@ -28,18 +28,13 @@ export class SeriesController {
     return this.seriesService.addSeries(userInputs, uploadedFile)
   }
 
-
   @Get()
   getAllSeries(@Query() query: PartialGetSeriesDto) {
     return this.seriesService.getAllSeries(query)
   }
 
   @Get(':id')
-  getSeriesById(
-    @Param('id', ParseObjectIdPipe) seriesId: Types.ObjectId
-  ) {
+  getSeriesById(@Param('id', ParseObjectIdPipe) seriesId: Types.ObjectId) {
     return this.seriesService.getSeriesById(seriesId)
   }
-
-
 }

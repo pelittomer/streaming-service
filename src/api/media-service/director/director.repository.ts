@@ -14,7 +14,10 @@ export class DirectorRepository {
         private readonly uploadService: UploadService,
     ) { }
 
-    async create(userInputs: CreateDirectorDto, uploadedImage: Express.Multer.File): Promise<void> {
+    async create(
+        userInputs: CreateDirectorDto,
+        uploadedImage: Express.Multer.File
+    ): Promise<void> {
         await this.sharedUtilsService.executeTransaction(async (session) => {
             const imageId = await this.uploadService.createFile(uploadedImage, session)
             await this.directorModel.create([{

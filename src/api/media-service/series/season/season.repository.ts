@@ -14,7 +14,10 @@ export class SeasonRepository {
         private readonly uploadService: UploadService,
     ) { }
 
-    async create(userInputs: CreateSeasonDto, uploadedFile: Express.Multer.File): Promise<void> {
+    async create(
+        userInputs: CreateSeasonDto,
+        uploadedFile: Express.Multer.File
+    ): Promise<void> {
         let posterId: Types.ObjectId | undefined
         await this.sharedUtilsService.executeTransaction(async (session) => {
             if (uploadedFile) {
@@ -28,7 +31,9 @@ export class SeasonRepository {
         return await this.seasonModel.find(queryFields).select('sessionNumber').lean()
     }
 
-    async exists(queryFields: Partial<Season | Pick<SeasonDocument, '_id'>>): Promise<Pick<SeasonDocument, '_id'> | null> {
+    async exists(
+        queryFields: Partial<Season | Pick<SeasonDocument, '_id'>>
+    ): Promise<Pick<SeasonDocument, '_id'> | null> {
         return await this.seasonModel.exists(queryFields)
     }
 }

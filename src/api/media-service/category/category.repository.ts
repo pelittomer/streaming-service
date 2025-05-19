@@ -9,7 +9,9 @@ export class CategoryRepository {
         @InjectModel(Category.name) private categoryModel: Model<Category>
     ) { }
 
-    async exists(queryFields: Partial<Category>): Promise<Pick<CategoryDocument, '_id'> | null> {
+    async exists(
+        queryFields: Partial<Category>
+    ): Promise<Pick<CategoryDocument, '_id'> | null> {
         return await this.categoryModel.exists(queryFields)
     }
 
@@ -18,6 +20,6 @@ export class CategoryRepository {
     }
 
     async find(): Promise<Category[]> {
-        return await this.categoryModel.find().sort({ views: -1 })
+        return await this.categoryModel.find()
     }
 }

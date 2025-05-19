@@ -1,34 +1,50 @@
-import { Types } from 'mongoose';
-import { IsNotEmpty, IsString, IsNumber, Min, IsMongoId } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber, Min } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
+import { GetEpisodeDto } from './get-episode.dto';
 
-export class CreateEpisodeDto {
-    @ApiProperty({ description: 'The title of the episode', example: 'The First Encounter' })
+export class CreateEpisodeDto extends GetEpisodeDto {
+    @ApiProperty({
+        description: 'The title of the episode',
+        type: String,
+        example: 'The First Encounter',
+        required: true
+    })
     @IsNotEmpty()
     @IsString()
     title: string;
 
-    @ApiProperty({ description: 'A brief summary of the episode', example: 'The main characters meet for the first time.' })
+    @ApiProperty({
+        description: 'A brief summary of the episode',
+        type: String,
+        example: 'The main characters meet for the first time.',
+        required: true
+    })
     @IsNotEmpty()
     @IsString()
     synopsis: string;
 
-    @ApiProperty({ description: 'The episode number within the season', example: 1 })
+    @ApiProperty({
+        description: 'The episode number within the season',
+        type: Number,
+        example: 1,
+        minimum: 1,
+        required: true
+    })
     @IsNotEmpty()
     @IsNumber()
     @Min(1)
     @Type(() => Number)
     episodeNumber: number;
 
-    @ApiProperty({ description: 'The duration of the episode in minutes', example: 45 })
+    @ApiProperty({
+        description: 'The duration of the episode in minutes',
+        type: Number,
+        example: 45,
+        required: true
+    })
     @IsNotEmpty()
-
+    @IsNumber()
     @Type(() => Number)
     duration: number;
-
-    @ApiProperty({ description: 'The ID of the associated season', example: '654321abcdef0987654321' })
-    @IsNotEmpty()
-    @IsMongoId()
-    season: Types.ObjectId;
 }

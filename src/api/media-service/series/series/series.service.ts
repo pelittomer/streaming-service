@@ -1,9 +1,10 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { SeriesRepository } from './series.repository';
 import { CreateSeriesDto } from './dto/create-series.dto';
 import { Types } from 'mongoose';
 import { PartialGetSeriesDto } from './dto/get-series.dto';
 import { Series, SeriesDocument } from './schemas/series.schema';
+import * as ErrorMessages from "./constants/error-messages.constant"
 
 @Injectable()
 export class SeriesService {
@@ -11,16 +12,19 @@ export class SeriesService {
     private readonly seriesRepository: SeriesRepository
   ) { }
 
-  async addSeries(userInputs: CreateSeriesDto, uploadedFile: Express.Multer.File): Promise<string> {
-    const seriesExists = await this.seriesRepository.exists({ title: userInputs.title })
+  private async checkIfSeriesExists(title: string): Promise<void> {
+    const seriesExists = await this.seriesRepository.exists({ title });
     if (seriesExists) {
-      throw new BadRequestException('Series already exists!')
+      throw new BadRequestException(ErrorMessages.SERIES_ALREADY_EXISTS_ERROR);
     }
-    userInputs.directors = new Types.ObjectId(userInputs.directors)
+  }
 
-    await this.seriesRepository.create(userInputs, uploadedFile)
+  async addSeries(userInputs: CreateSeriesDto, uploadedFile: Express.Multer.File): Promise<string> {
+    await this.checkIfSeriesExists(userInputs.title)
 
-    return 'Series created successfully.'
+    const directorObjectId = new Types.ObjectId(userInputs.directors)
+    await this.seriesRepository.create({ ...userInputs, directors: directorObjectId }, uploadedFile)
+    return ErrorMessages.SERIES_CREATED_SUCCESS
   }
 
   async getAllSeries(queryFields: PartialGetSeriesDto): Promise<Pick<SeriesDocument, '_id' | 'title' | 'synopsis' | 'rate' | 'poster'>[]> {
@@ -35,7 +39,7 @@ export class SeriesService {
       filter.category = new Types.ObjectId(queryFields.categoryId)
     }
     if (queryFields.q) {
-      filter.title = { $regex: new RegExp(queryFields.q, 'i') };
+      filter.title = { $regex: new RegExp(queryFields.q, 'i') }
     }
     if (queryFields.sort) {
       const regex = /^(.*?)(?:_|$)(.*?)$/;
@@ -49,8 +53,11 @@ export class SeriesService {
     return await this.seriesRepository.find(limit, startIndex, filter, sortCriteria)
   }
 
-  async getSeriesById(seriesId: Types.ObjectId): Promise<Series | string> {
+  async getSeriesById(seriesId: Types.ObjectId): Promise<Series> {
     const series = await this.seriesRepository.findById(seriesId)
-    return series ? series : 'Series not found!'
+    if (!series) {
+      throw new NotFoundException(ErrorMessages.SERIES_NOT_FOUND_ERROR)
+    }
+    return series
   }
 }
