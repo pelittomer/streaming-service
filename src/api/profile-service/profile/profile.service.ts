@@ -6,63 +6,77 @@ import { SharedUtilsService } from 'src/common/utils/shared-utils.service';
 import { Types } from 'mongoose';
 import { Profile, ProfileDocument } from './schemas/profile.schema';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import * as ErrorMessages from "./constants/error-messages.constant"
 
 @Injectable()
 export class ProfileService {
+  private readonly PROFILE_LIMIT = 5
+
   constructor(
-    private readonly profileRepostiory: ProfileRepository,
+    private readonly profileRepository: ProfileRepository,
     private readonly sharedUtilsService: SharedUtilsService
   ) { }
 
-  async addProfile(userInputs: CreateProfileDto, req: Request, uploadedImage: Express.Multer.File): Promise<string> {
-    const user = this.sharedUtilsService.getUserInfo(req)
-    const userId = new Types.ObjectId(user.userId)
-
-    const foundProfile = await this.profileRepostiory.countDocument({ user: userId })
-    if (foundProfile === 5) {
-      throw new BadRequestException('You can create up to 5 profiles only.')
+  private async verifyProfileOwnership(
+    profileId: Types.ObjectId,
+    userId: Types.ObjectId
+  ): Promise<ProfileDocument> {
+    const foundProfile = await this.profileRepository.findOne({ _id: profileId, user: userId })
+    if (!foundProfile) {
+      throw new NotFoundException(ErrorMessages.PROFILE_NOT_FOUND)
     }
-
-    await this.profileRepostiory.create({
-      ...userInputs,
-      user: userId
-    }, uploadedImage)
-
-    return 'Profile created successfully.'
+    return foundProfile
   }
 
-  async getCurrentProfile(profileId: Types.ObjectId, req: Request): Promise<ProfileDocument | null> {
-    const user = this.sharedUtilsService.getUserInfo(req)
-    const userId = new Types.ObjectId(user.userId)
-    return await this.profileRepostiory.findOne({ _id: profileId, user: userId })
+  private async checkProfileLimit(userId: Types.ObjectId): Promise<void> {
+    const profileCount = await this.profileRepository.countDocument({ user: userId })
+    if (profileCount === this.PROFILE_LIMIT) {
+      throw new BadRequestException(ErrorMessages.PROFILE_LIMIT_REACHED)
+    }
+  }
+
+  async addProfile(
+    userInputs: CreateProfileDto,
+    req: Request,
+    uploadedImage: Express.Multer.File
+  ): Promise<string> {
+    const userId = this.sharedUtilsService.getUserIdFromRequest(req)
+    await this.checkProfileLimit(userId)
+    await this.profileRepository.create({ ...userInputs, user: userId }, uploadedImage)
+    return ErrorMessages.PROFILE_CREATED_SUCCESSFULLY
+  }
+
+  async getCurrentProfile(
+    profileId: Types.ObjectId,
+    req: Request
+  ): Promise<ProfileDocument | null> {
+    const userId = this.sharedUtilsService.getUserIdFromRequest(req)
+    return await this.profileRepository.findOne({ _id: profileId, user: userId })
   }
 
   async getUserProfile(req: Request): Promise<Profile[]> {
-    const user = this.sharedUtilsService.getUserInfo(req)
-    const userId = new Types.ObjectId(user.userId)
-    return await this.profileRepostiory.find({ user: userId })
+    const userId = this.sharedUtilsService.getUserIdFromRequest(req)
+    return await this.profileRepository.find({ user: userId })
   }
 
   async updateMyProfile(
     userInputs: UpdateProfileDto,
     req: Request,
     uploadedImage: Express.Multer.File,
-    profileId: Types.ObjectId): Promise<string> {
-    const user = this.sharedUtilsService.getUserInfo(req)
-    const userId = new Types.ObjectId(user.userId)
+    profileId: Types.ObjectId
+  ): Promise<string> {
+    const userId = this.sharedUtilsService.getUserIdFromRequest(req)
+    const profileObjectId = new Types.ObjectId(profileId)
 
-    const foundProfile = await this.profileRepostiory.findOne({ user: userId, _id: profileId })
-    if (!foundProfile) {
-      throw new NotFoundException('Profile not found!')
-    }
+    const foundProfile = await this.verifyProfileOwnership(profileObjectId, userId)
 
-    await this.profileRepostiory.findOneAndUpdate(
+    await this.profileRepository.findOneAndUpdate(
       { user: userId, _id: profileId },
       userInputs,
       uploadedImage,
       foundProfile.avatar
     )
 
-    return 'Profile updated successfully.'
+    return ErrorMessages.PROFILE_UPDATED_SUCCESSFULLY
   }
 }

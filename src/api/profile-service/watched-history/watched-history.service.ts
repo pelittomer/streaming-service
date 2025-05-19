@@ -1,48 +1,80 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { WatchedHistoryRepository } from './watched-history.repository';
 import { CreateWatchedHistoryDto } from './dto/create-watched-history.dto';
 import { Request } from 'express';
 import { SharedUtilsService } from 'src/common/utils/shared-utils.service';
 import { Types } from 'mongoose';
 import { WatchedHistory } from './schemas/watched-history.schema';
-import { PartialGetWatchedHistoryDto } from './dto/get-watched-history.dto';
+import { GetWatchedHistoryDto } from './dto/get-watched-history.dto';
+import { WatchedHistoryQuery } from './dto/watched-history-query.dto';
+import { ProfileRepository } from '../profile/profile.repository';
+import * as ErrorMessages from "./constants/error-messages.constant"
 
 @Injectable()
 export class WatchedHistoryService {
   constructor(
     private readonly watchedHistoryRepository: WatchedHistoryRepository,
+    private readonly profileRepository: ProfileRepository,
     private readonly sharedUtilsService: SharedUtilsService,
   ) { }
 
-  async recordWatchedHistory(userInputs: CreateWatchedHistoryDto, req: Request): Promise<string> {
-    const user = this.sharedUtilsService.getUserInfo(req)
-    const userId = new Types.ObjectId(user.userId)
+  private async validateProfileOwnership(
+    profileId: Types.ObjectId,
+    userId: Types.ObjectId
+  ): Promise<void> {
+    const matchUser = await this.profileRepository.exists({ _id: profileId, user: userId })
+    if (!matchUser) {
+      throw new BadRequestException(ErrorMessages.HISTORY_NOT_MATCH_ACCOUNT)
+    }
+  }
 
-    const query = { profile: userId }
-    const update = { watchDuration: userInputs.watchDuration }
+  private async getProfileObjectIdAndValidate(
+    req: Request,
+    profileIdFromQuery: WatchedHistoryQuery
+  ): Promise<Types.ObjectId> {
+    const userId = this.sharedUtilsService.getUserIdFromRequest(req)
+    const profileObjectId = new Types.ObjectId(profileIdFromQuery.profile)
+
+    await this.validateProfileOwnership(profileObjectId, userId)
+    return profileObjectId
+  }
+
+  async recordWatchedHistory(
+    userInputs: CreateWatchedHistoryDto,
+    req: Request
+  ): Promise<string> {
+    const profileObjectId = await this.getProfileObjectIdAndValidate(req, userInputs)
+
+    const query = { profile: profileObjectId }
+    const updateFields = { watchDuration: userInputs.watchDuration }
     if (userInputs.movie) {
       const movie = new Types.ObjectId(userInputs.movie)
-      await this.watchedHistoryRepository.findOneAndUpdate({ ...query, movie }, update)
+      await this.watchedHistoryRepository.findOneAndUpdate({ ...query, movie }, updateFields)
     } else if (userInputs.episode) {
       const episode = new Types.ObjectId(userInputs.episode)
-      await this.watchedHistoryRepository.findOneAndUpdate({ ...query, episode }, update)
+      await this.watchedHistoryRepository.findOneAndUpdate({ ...query, episode }, updateFields)
     }
 
-    return 'Watch time recorded.'
+    return ErrorMessages.WATCH_TIME_RECORDED
   }
 
-  async getAllWatchedHistory(req: Request): Promise<WatchedHistory[]> {
-    const user = this.sharedUtilsService.getUserInfo(req)
-    const userId = new Types.ObjectId(user.userId)
-    return await this.watchedHistoryRepository.find({ profile: userId })
+  async getAllWatchedHistory(
+    req: Request,
+    queryFields: WatchedHistoryQuery
+  ): Promise<WatchedHistory[]> {
+    const profileObjectId = await this.getProfileObjectIdAndValidate(req, queryFields)
+    return await this.watchedHistoryRepository.find({ profile: profileObjectId })
   }
 
-  async getWatchedHistory(query: PartialGetWatchedHistoryDto, req: Request): Promise<WatchedHistory | null> {
-    const user = this.sharedUtilsService.getUserInfo(req)
-    const userId = new Types.ObjectId(user.userId)
-    if (query.episode) query.episode = new Types.ObjectId(query.episode)
-    if (query.movie) query.episode = new Types.ObjectId(query.movie)
-      
-    return await this.watchedHistoryRepository.findOne({ ...query, profile: userId })
+  async getWatchedHistory(
+    queryFields: GetWatchedHistoryDto,
+    req: Request
+  ): Promise<WatchedHistory | null> {
+    const profileObjectId = await this.getProfileObjectIdAndValidate(req, queryFields)
+
+    if (queryFields.episode) queryFields.episode = new Types.ObjectId(queryFields.episode)
+    if (queryFields.movie) queryFields.episode = new Types.ObjectId(queryFields.movie)
+
+    return await this.watchedHistoryRepository.findOne({ ...queryFields, profile: profileObjectId })
   }
 }

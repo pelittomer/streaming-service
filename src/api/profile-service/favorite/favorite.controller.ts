@@ -4,8 +4,9 @@ import { AuthGuard } from 'src/common/guards/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Role } from 'src/common/types';
 import { Roles } from 'src/common/decorators/roles.decorator';
-import { PartialFavoriteDto } from './dto/favorite.dto';
 import { Request } from 'express';
+import { GetFavoriteDto } from './dto/get-favorite.dto';
+import { CreateFavoriteDto } from './dto/favorite.dto';
 
 @Controller('favorite')
 export class FavoriteController {
@@ -15,7 +16,7 @@ export class FavoriteController {
   @Roles(Role.Customer)
   @Post()
   addFavorite(
-    @Body() userInputs: PartialFavoriteDto,
+    @Body() userInputs: CreateFavoriteDto,
     @Req() req: Request
   ) {
     return this.favoriteService.addFavorite(userInputs, req)
@@ -25,27 +26,29 @@ export class FavoriteController {
   @Roles(Role.Customer)
   @Delete('')
   removeFavoriteById(
-    @Query() query: PartialFavoriteDto,
+    @Body() userInputs: CreateFavoriteDto,
     @Req() req: Request
   ) {
-    return this.favoriteService.removeFavoriteById(query, req)
+    return this.favoriteService.removeFavoriteById(userInputs, req)
   }
 
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Customer)
   @Delete('all')
   removeAllFavorites(
-    @Req() req: Request
+    @Req() req: Request,
+    @Query() query: GetFavoriteDto
   ) {
-    return this.favoriteService.removeAllFavorites(req)
+    return this.favoriteService.removeAllFavorites(req, query)
   }
 
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Customer)
   @Get()
   getUserFavorites(
-    @Req() req: Request
+    @Req() req: Request,
+    @Query() query: GetFavoriteDto
   ) {
-    return this.favoriteService.getUserFavorites(req)
+    return this.favoriteService.getUserFavorites(req, query)
   }
 }

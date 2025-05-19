@@ -2,8 +2,9 @@ import { IsNumber, IsOptional, IsMongoId, Min } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 import { Type } from 'class-transformer';
+import { WatchedHistoryQuery } from './watched-history-query.dto';
 
-export class CreateWatchedHistoryDto {
+export class CreateWatchedHistoryDto extends WatchedHistoryQuery {
     @ApiProperty({ description: 'The watch duration in seconds.', example: 120 })
     @IsNumber()
     @Min(0)

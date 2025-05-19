@@ -3,7 +3,8 @@ import { WatchedHistoryService } from './watched-history.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { CreateWatchedHistoryDto } from './dto/create-watched-history.dto';
 import { Request } from 'express';
-import { PartialGetWatchedHistoryDto } from './dto/get-watched-history.dto';
+import { GetWatchedHistoryDto } from './dto/get-watched-history.dto';
+import { WatchedHistoryQuery } from './dto/watched-history-query.dto';
 
 @Controller('watched-history')
 export class WatchedHistoryController {
@@ -21,15 +22,16 @@ export class WatchedHistoryController {
   @UseGuards(AuthGuard)
   @Get('all')
   getAllWatchedHistory(
-    @Req() req: Request
+    @Req() req: Request,
+    @Query() query: WatchedHistoryQuery
   ) {
-    return this.watchedHistoryService.getAllWatchedHistory(req)
+    return this.watchedHistoryService.getAllWatchedHistory(req, query)
   }
 
   @UseGuards(AuthGuard)
   @Get('')
   getWatchedHistory(
-    @Query() query: PartialGetWatchedHistoryDto,
+    @Query() query: GetWatchedHistoryDto,
     @Req() req: Request
   ) {
     return this.watchedHistoryService.getWatchedHistory(query, req)

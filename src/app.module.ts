@@ -9,7 +9,6 @@ import { UserModule } from './api/user-service/user/user.module';
 import { AuthModule } from './api/user-service/auth/auth.module';
 import { ProfileModule } from './api/profile-service/profile/profile.module';
 import { FavoriteModule } from './api/profile-service/favorite/favorite.module';
-import { ListModule } from './api/profile-service/list/list.module';
 import { MovieModule } from './api/media-service/movie/movie.module';
 import { CategoryModule } from './api/media-service/category/category.module';
 import { SubtitleModule } from './api/media-service/subtitle/subtitle.module';
@@ -50,7 +49,6 @@ import { OnlineStatusGateway } from './common/gateways/online-status/online-stat
     AuthModule,
     ProfileModule,
     FavoriteModule,
-    ListModule,
     MovieModule,
     CategoryModule,
     SubtitleModule,

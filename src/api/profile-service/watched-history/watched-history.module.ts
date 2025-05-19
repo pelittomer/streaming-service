@@ -5,13 +5,14 @@ import { WatchedHistoryRepository } from './watched-history.repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import { WatchedHistory, WatchedHistorySchema } from './schemas/watched-history.schema';
 import { SharedUtilsModule } from 'src/common/utils/shared-utils.module';
+import { ProfileModule } from '../profile/profile.module';
 
 @Module({
   controllers: [WatchedHistoryController],
   providers: [WatchedHistoryService, WatchedHistoryRepository],
   imports: [
     MongooseModule.forFeature([{ name: WatchedHistory.name, schema: WatchedHistorySchema }]),
-    SharedUtilsModule
+    SharedUtilsModule, ProfileModule
   ],
   exports: [WatchedHistoryRepository]
 })

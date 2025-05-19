@@ -9,7 +9,9 @@ export class WatchedHistoryRepository {
         @InjectModel(WatchedHistory.name) private watchedHistoryModel: Model<WatchedHistory>
     ) { }
 
-    async exists(queryFields: Partial<WatchedHistory>): Promise<Pick<WatchedHistoryDocument, '_id'> | null> {
+    async exists(
+        queryFields: Partial<WatchedHistory>
+    ): Promise<Pick<WatchedHistoryDocument, '_id'> | null> {
         return await this.watchedHistoryModel.exists(queryFields)
     }
 

@@ -51,5 +51,4 @@ export class ProfileController {
   ) {
     return this.profileService.updateMyProfile(userInputs, req, uploadedImage, profileId)
   }
-
 }

@@ -1,128 +1,143 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { FavoriteRepository } from './favorite.repository';
-import { PartialFavoriteDto } from './dto/favorite.dto';
 import { Request } from 'express';
 import { SharedUtilsService } from 'src/common/utils/shared-utils.service';
 import { MovieRepository } from 'src/api/media-service/movie/movie.repository';
 import { SeriesRepository } from 'src/api/media-service/series/series/series.repository';
 import { Types } from 'mongoose';
 import { Favorite } from './schemas/favorite.schema';
+import * as ErrorMessages from "./constants/error-messages.constant"
+import { ProfileRepository } from '../profile/profile.repository';
+import { GetFavoriteDto } from './dto/get-favorite.dto';
+import { CreateFavoriteDto } from './dto/favorite.dto';
 
 @Injectable()
 export class FavoriteService {
   constructor(
     private readonly favoriteRepository: FavoriteRepository,
     private readonly movieRepository: MovieRepository,
+    private readonly profileRepository: ProfileRepository,
     private readonly seriesRepository: SeriesRepository,
     private readonly sharedUtilsService: SharedUtilsService,
   ) { }
 
-  async addFavorite(userInputs: PartialFavoriteDto, req: Request) {
-    const { movie, series } = userInputs
-    const user = this.sharedUtilsService.getUserInfo(req)
-    const userId = new Types.ObjectId(user.userId)
 
-    const updateQuery: any = { profile: userId }
-    const updateSet: any = {}
+  private async validateProfileOwnership(userId: Types.ObjectId, profileId: Types.ObjectId): Promise<void> {
+    const profileExists = await this.profileRepository.exists({ user: userId, _id: profileId })
+    if (!profileExists) {
+      throw new BadRequestException(ErrorMessages.PROFILE_NOT_FOUND)
+    }
+  }
 
+  private async validateMediaExistence(movie?: Types.ObjectId, series?: Types.ObjectId) {
     if (!movie && !series) {
-      throw new BadRequestException('Movie or series ID required!')
+      throw new BadRequestException(ErrorMessages.MOVIE_OR_SERIES_REQUIRED)
     }
+
+    const [repository, notFoundErrorMessage] = movie
+      ? [this.movieRepository, ErrorMessages.MOVIE_NOT_FOUND]
+      : [this.seriesRepository, ErrorMessages.SERIES_NOT_FOUND]
+
+    const exists = await repository.exists({ _id: movie || series })
+
+    if (!exists) {
+      throw new BadRequestException(notFoundErrorMessage)
+    }
+  }
+
+  private async processFavorite(
+    userInputs: CreateFavoriteDto,
+    req: Request,
+    operation: '$addToSet' | '$pull',
+    successMessageKey: string,
+    notFoundInFavoritesMessageKey?: string
+  ) {
+    const { movie, series, profile } = userInputs
+    const userId = this.sharedUtilsService.getUserIdFromRequest(req)
+    const profileId = new Types.ObjectId(profile)
+
+    await this.validateProfileOwnership(userId, profileId)
+    await this.validateMediaExistence(movie, series)
+
+    let mediaId: Types.ObjectId | undefined,
+      mediaType: 'movie' | 'series',
+      itemType: 'Movie' | 'Series'
+
+    const updateQuery = { profile: profileId },
+      updateSet: any = {}
+
     if (movie) {
-      const movieExists = await this.movieRepository.exists({ _id: movie })
-      if (!movieExists) {
-        throw new BadRequestException('Movie not found.')
-      }
-      updateSet.movie = movie
+      mediaId = new Types.ObjectId(movie)
+      mediaType = 'movie'
+      updateSet.movie = mediaId
+      itemType = "Movie"
+    } else if (series) {
+      mediaId = new Types.ObjectId(series)
+      mediaType = 'series'
+      updateSet.series = mediaId
+      itemType = "Series"
     }
-
-    if (series) {
-      const seriesExists = await this.seriesRepository.exists({ _id: series })
-      if (!seriesExists) {
-        throw new BadRequestException('Series not found.')
+    if (operation === '$pull') {
+      const favoriteDocument = await this.favoriteRepository.findOne(updateQuery)
+      if (!favoriteDocument) {
+        throw new NotFoundException(ErrorMessages.FAVORITE_LIST_NOT_FOUND)
       }
-      updateSet.series = series
+      const itemIdToCheck = mediaId!
+      const existingItem = favoriteDocument[mediaType!].find((item) => item.equals(itemIdToCheck))
+      if (!existingItem) {
+        throw new NotFoundException(notFoundInFavoritesMessageKey || ErrorMessages.ITEM_NOT_FOUND_IN_FAVORITES)
+      }
     }
-
     if (Object.keys(updateSet).length > 0) {
       await this.favoriteRepository.findOneAndUpdate(
-        { profile: userId },
-        { $addToSet: updateSet } as any
-      )
-
-      return `${movie ? 'Movie' : 'Series'} added to favorites successfully.`
-    }
-
-    return `${movie ? 'Movie' : 'Series'} added to favorites successfully.`
-  }
-
-
-  async removeFavoriteById(userInputs: PartialFavoriteDto, req: Request) {
-    const { movie, series } = userInputs
-    const user = this.sharedUtilsService.getUserInfo(req)
-    const userId = new Types.ObjectId(user.userId)
-
-    if (!movie && !series) {
-      throw new BadRequestException('Movie or series ID required to remove from favorites!')
-    }
-
-    const updateQuery: any = { profile: userId }
-    const updatePull: any = {}
-    let itemType: 'Movie' | 'Series' | null = null
-
-    const favoriteDocument = await this.favoriteRepository.findOne({ profile: userId })
-    if (!favoriteDocument) {
-      throw new NotFoundException('Favorite list not found for this user.')
-    }
-
-    if (movie) {
-      const movieObjectId = new Types.ObjectId(movie)
-      if (favoriteDocument.movie.find((item) => item.equals(movieObjectId))) {
-        updatePull.movie = movieObjectId
-        itemType = 'Movie'
-      } else {
-        throw new NotFoundException('Movie not found in favorites.')
-      }
-    }
-
-    if (series) {
-      const seriesObjectId = new Types.ObjectId(series)
-      if (favoriteDocument.series.find((item) => item.equals(seriesObjectId))) {
-        updatePull.series = seriesObjectId
-        itemType = 'Series'
-      } else {
-        throw new NotFoundException('Series not found in favorites.')
-      }
-    }
-
-    if (Object.keys(updatePull).length > 0) {
-      await this.favoriteRepository.findOneAndUpdate(
         updateQuery,
-        { $pull: updatePull } as any
+        { [operation]: updateSet } as any
       )
-      return `${itemType} removed from favorites successfully.`
+      return `${itemType!}${ErrorMessages[successMessageKey]}`
     }
-
-    return 'No items were removed from favorites.'
-
+    return null
   }
 
-  async removeAllFavorites(req: Request): Promise<string> {
-    const user = this.sharedUtilsService.getUserInfo(req)
-    const userId = new Types.ObjectId(user.userId)
-
-    const updateQuery: any = { profile: userId }
-    const updateSet: any = { movie: [], series: [] }
-
-    await this.favoriteRepository.findOneAndUpdate(updateQuery, updateSet)
-
-    return 'All items have been removed from your favorites.'
+  async addFavorite(userInputs: CreateFavoriteDto, req: Request) {
+    return this.processFavorite(
+      userInputs,
+      req,
+      '$addToSet',
+      'ADDED_SUCCESSFULLY'
+    )
   }
 
-  async getUserFavorites(req: Request): Promise<Favorite | null> {
-    const user = this.sharedUtilsService.getUserInfo(req)
-    const userId = new Types.ObjectId(user.userId)
 
-    return await this.favoriteRepository.findOneAndPopulate({ profile: userId })
+  async removeFavoriteById(userInputs: CreateFavoriteDto, req: Request) {
+    return this.processFavorite(
+      userInputs,
+      req,
+      '$pull',
+      'REMOVED_SUCCESSFULLY',
+      'ITEM_NOT_FOUND_IN_FAVORITES'
+    )
+  }
+
+  async removeAllFavorites(req: Request, queryFields: GetFavoriteDto): Promise<string> {
+    const userId = this.sharedUtilsService.getUserIdFromRequest(req)
+    const profileObjectId = new Types.ObjectId(queryFields.profile)
+
+    await this.validateProfileOwnership(userId, profileObjectId)
+
+    await this.favoriteRepository.findOneAndUpdate(
+      { profile: profileObjectId },
+      { movie: [], series: [] }
+    )
+
+    return ErrorMessages.ALL_REMOVED
+  }
+
+  async getUserFavorites(req: Request, queryFields: GetFavoriteDto): Promise<Favorite | null> {
+    const userId = this.sharedUtilsService.getUserIdFromRequest(req)
+    const profileObjectId = new Types.ObjectId(queryFields.profile)
+
+    await this.validateProfileOwnership(userId, profileObjectId)
+
+    return await this.favoriteRepository.findOneAndPopulate({ profile: profileObjectId })
   }
 }

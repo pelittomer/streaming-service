@@ -2,7 +2,7 @@ import { Injectable, Logger, UnauthorizedException } from "@nestjs/common";
 import { Request } from "express";
 import { UserInfo } from "../types";
 import { InjectConnection } from "@nestjs/mongoose";
-import { ClientSession, Connection } from "mongoose";
+import { ClientSession, Connection, Types } from "mongoose";
 
 
 @Injectable()
@@ -30,5 +30,10 @@ export class SharedUtilsService {
             throw new UnauthorizedException('You must be logged in.')
         }
         return user
+    }
+
+    getUserIdFromRequest(req: Request): Types.ObjectId {
+        const user = this.getUserInfo(req)
+        return new Types.ObjectId(user.userId)
     }
 }

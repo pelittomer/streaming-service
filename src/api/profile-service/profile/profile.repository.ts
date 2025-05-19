@@ -5,12 +5,14 @@ import { Model, Types } from "mongoose";
 import { SharedUtilsService } from "src/common/utils/shared-utils.service";
 import { UploadService } from "src/api/upload-service/upload/upload.service";
 import { UpdateProfileDto } from "./dto/update-profile.dto";
+import { FavoriteRepository } from "../favorite/favorite.repository";
 
 @Injectable()
 export class ProfileRepository {
     constructor(
         @InjectModel(Profile.name) private profileModel: Model<Profile>,
         private readonly sharedUtilsService: SharedUtilsService,
+        private readonly favoriteRepository: FavoriteRepository,
         private readonly uploadService: UploadService,
     ) { }
 
@@ -18,17 +20,23 @@ export class ProfileRepository {
         return await this.profileModel.countDocuments(queryFields)
     }
 
-    async create(queryFields: Partial<Profile>, uploadedImage: Express.Multer.File): Promise<void> {
+    async create(
+        queryFields: Partial<Profile>,
+         uploadedImage: Express.Multer.File
+        ): Promise<void> {
         await this.sharedUtilsService.executeTransaction(async (session) => {
             const imageId = await this.uploadService.createFile(uploadedImage, session)
-            await this.profileModel.create([{
+            const [newProfile] = await this.profileModel.create([{
                 ...queryFields,
                 avatar: imageId
             }], { session })
+            await this.favoriteRepository.create({ profile: newProfile._id }, session)
         })
     }
 
-    async findOne(queryFields: Partial<Profile | Pick<ProfileDocument, '_id'>>): Promise<ProfileDocument | null> {
+    async findOne(
+        queryFields: Partial<Profile | Pick<ProfileDocument, '_id'>>
+    ): Promise<ProfileDocument | null> {
         return await this.profileModel.findOne(queryFields)
     }
 
@@ -58,4 +66,9 @@ export class ProfileRepository {
         })
     }
 
+    async exists(
+        queryFields: Partial<Profile | Pick<ProfileDocument, '_id'>>
+    ): Promise<Pick<ProfileDocument, '_id'> | null> {
+        return await this.profileModel.exists(queryFields)
+    }
 }
