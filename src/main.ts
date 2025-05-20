@@ -7,6 +7,8 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { ConfigService } from '@nestjs/config';
 import { AppConfig } from './config/type';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { LogModel } from './modules/logger/logger.model';
+import { CustomLoggerService } from './modules/logger/logger.service';
 
 function setupSwagger(app) {
   const config = new DocumentBuilder()
@@ -21,6 +23,10 @@ function setupSwagger(app) {
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  //logger setup
+  const logModel = app.get(LogModel)
+  const customLogger = new CustomLoggerService(logModel)
+  app.useLogger(customLogger)
   const logger = new Logger('App')
   // Sets the global prefix for all API routes to '/api'
   app.setGlobalPrefix('api')

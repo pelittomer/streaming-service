@@ -26,6 +26,7 @@ import { OnlineStatusGateway } from './common/gateways/online-status/online-stat
 import { ScheduleModule } from '@nestjs/schedule';
 import { minutes, seconds, ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { LoggerModule } from './modules/logger/logger.module';
 
 @Module({
   imports: [
@@ -83,6 +84,7 @@ import { APP_GUARD } from '@nestjs/core';
     WatchedHistoryModule,
     ActorModule,
     DirectorModule,
+    LoggerModule
   ],
   providers: [
     {
