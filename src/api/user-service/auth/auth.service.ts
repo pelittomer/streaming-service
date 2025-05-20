@@ -1,7 +1,7 @@
 import { BadRequestException, ForbiddenException, HttpStatus, Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { RegisterDto } from './dto/register.dto';
 import { UserRepository } from '../user/user.repository';
-import { compare, genSalt, hash } from 'bcrypt';
+import { compare, genSalt, hash } from 'bcryptjs';
 import { LoginDto } from './dto/login.dto';
 import { CookieOptions, Request, Response } from 'express';
 import { JwtPayload, JwtService } from 'src/modules/jwt/jwt.service';
