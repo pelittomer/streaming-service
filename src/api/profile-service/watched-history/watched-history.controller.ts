@@ -5,6 +5,7 @@ import { CreateWatchedHistoryDto } from './dto/create-watched-history.dto';
 import { Request } from 'express';
 import { GetWatchedHistoryDto } from './dto/get-watched-history.dto';
 import { WatchedHistoryQuery } from './dto/watched-history-query.dto';
+import { seconds, Throttle } from '@nestjs/throttler';
 
 @Controller('watched-history')
 export class WatchedHistoryController {
@@ -28,6 +29,9 @@ export class WatchedHistoryController {
     return this.watchedHistoryService.getAllWatchedHistory(req, query)
   }
 
+  @Throttle({
+    short: { ttl: seconds(20), limit: 1 },
+  })
   @UseGuards(AuthGuard)
   @Get('')
   getWatchedHistory(

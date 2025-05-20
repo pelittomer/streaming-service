@@ -24,6 +24,8 @@ import { ActorModule } from './api/media-service/actor/actor.module';
 import { DirectorModule } from './api/media-service/director/director.module';
 import { OnlineStatusGateway } from './common/gateways/online-status/online-status.gateway';
 import { ScheduleModule } from '@nestjs/schedule';
+import { minutes, seconds, ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -47,6 +49,23 @@ import { ScheduleModule } from '@nestjs/schedule';
       })
     }),
     ScheduleModule.forRoot(),
+    ThrottlerModule.forRoot([
+      {
+        name: 'short',
+        ttl: seconds(1),
+        limit: 10,
+      },
+      {
+        name: 'medium',
+        ttl: seconds(60),
+        limit: 100,
+      },
+      {
+        name: 'long',
+        ttl: minutes(5),
+        limit: 500,
+      },
+    ]),
     UserModule,
     AuthModule,
     ProfileModule,
@@ -65,6 +84,13 @@ import { ScheduleModule } from '@nestjs/schedule';
     ActorModule,
     DirectorModule,
   ],
-  providers: [AppService, OnlineStatusGateway],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard
+    },
+    AppService,
+    OnlineStatusGateway
+  ],
 })
 export class AppModule { }
