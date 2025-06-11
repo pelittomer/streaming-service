@@ -3,11 +3,11 @@ import { EpisodeService } from './episode.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
-import { Role } from 'src/common/types';
 import { CreateEpisodeDto } from './dto/create-episode.dto';
 import { GetEpisodeDto } from './dto/get-episode.dto';
 import { ParseObjectIdPipe } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
+import { Role } from 'src/api/user-service/user/entities/types';
 
 @Controller('episode')
 export class EpisodeController {

@@ -4,9 +4,9 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
-import { Role } from 'src/common/types';
 import { CreateSubtitleDto } from './dto/create-subtitle.dto';
 import { PartialGetSubtitleDto } from './dto/get-subtitle.dto';
+import { Role } from 'src/api/user-service/user/entities/types';
 
 @Controller('subtitle')
 export class SubtitleController {

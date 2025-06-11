@@ -1,8 +1,0 @@
-export const USERNAME_EXISTS_ERROR = 'This username is already in use. Please choose another username.'
-export const EMAIL_EXISTS_ERROR = 'This email address is already registered. Please use a different email address.'
-export const USER_NOT_FOUND_ERROR = 'A user with the entered email address was not found. Please check your email address or register.'
-export const INVALID_PASSWORD_ERROR = 'The password you entered is incorrect. Please check your password and try again.'
-export const REFRESH_TOKEN_MISSING_ERROR = 'The information required to refresh your session was not found. Please log in again.'
-export const USER_VERIFICATION_FAILED_ERROR = 'Your user account could not be verified. Please log in again.'
-export const SESSION_EXPIRED_ERROR = 'Your session has expired. Please log in again.'
-export const SESSION_VERIFICATION_FAILED_ERROR = 'Your session could not be verified. Please log in again.'

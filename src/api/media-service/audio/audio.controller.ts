@@ -3,10 +3,10 @@ import { AudioService } from './audio.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
-import { Role } from 'src/common/types';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateAudioDto } from './dto/create-audio.dto';
 import { PartialGetAudioDto } from './dto/get-audio.dto';
+import { Role } from 'src/api/user-service/user/entities/types';
 
 @Controller('audio')
 export class AudioController {

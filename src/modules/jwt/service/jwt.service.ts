@@ -2,17 +2,12 @@ import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService as NestJwtService } from "@nestjs/jwt"
 import { Types } from "mongoose";
-import { Role } from "src/common/types";
+import { UserDocument } from "src/api/user-service/user/entities/types";
 import { AppConfig } from "src/config/type";
-
-export interface JwtPayload {
-    username: string;
-    userId: Types.ObjectId;
-    roles: Role;
-}
+import { IJwtService, JwtPayload } from "./jwt.service.interface";
 
 @Injectable()
-export class JwtService {
+export class JwtService implements IJwtService {
     private readonly accessTokenExpiresIn = '15m'
     private readonly refreshTokenExpiresIn = '7d'
     private readonly secretKey: string
@@ -31,6 +26,14 @@ export class JwtService {
             expiresIn,
             secret: this.secretKey
         })
+    }
+
+    createJwtPayload(user: UserDocument): JwtPayload {
+        return {
+            userId: user._id as Types.ObjectId,
+            username: user.username,
+            roles: user.roles,
+        }
     }
 
     async signAccessToken(payload: JwtPayload): Promise<string> {

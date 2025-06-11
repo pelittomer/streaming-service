@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Req, Res, UseFilters } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import { AuthService } from './service/auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { Request, Response } from 'express';
@@ -23,10 +23,10 @@ export class AuthController {
   })
   @Post('sign-in')
   signIn(
-    @Body() userInputs: LoginDto,
+    @Body() payload: LoginDto,
     @Res({ passthrough: true }) res: Response
   ) {
-    return this.authService.login(userInputs, res)
+    return this.authService.login({ payload, res })
   }
 
   @Post('sign-out')
@@ -34,7 +34,7 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response
   ) {
-    return this.authService.logout(req, res)
+    return this.authService.logout({ req, res })
   }
 
   @Get('refresh')

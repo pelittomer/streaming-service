@@ -2,11 +2,11 @@ import { Body, Controller, Delete, Get, Post, Query, Req, UseGuards } from '@nes
 import { FavoriteService } from './favorite.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
-import { Role } from 'src/common/types';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { Request } from 'express';
 import { GetFavoriteDto } from './dto/get-favorite.dto';
 import { CreateFavoriteDto } from './dto/favorite.dto';
+import { Role } from 'src/api/user-service/user/entities/types';
 
 @Controller('favorite')
 export class FavoriteController {

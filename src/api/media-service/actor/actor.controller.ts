@@ -3,11 +3,11 @@ import { ActorService } from './actor.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
-import { Role } from 'src/common/types';
 import { UploadImage } from 'src/common/decorators/upload-image.decorator';
 import { CreateActorDto } from './dto/create-actor.dto';
 import { ParseObjectIdPipe } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
+import { Role } from 'src/api/user-service/user/entities/types';
 
 @Controller('actor')
 export class ActorController {

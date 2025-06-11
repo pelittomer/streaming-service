@@ -3,10 +3,10 @@ import { SeasonService } from './season.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
-import { Role } from 'src/common/types';
 import { UploadImage } from 'src/common/decorators/upload-image.decorator';
 import { CreateSeasonDto } from './dto/create-season.dto';
 import { GetSeasonDto } from './dto/get-season.dto';
+import { Role } from 'src/api/user-service/user/entities/types';
 
 @Controller('season')
 export class SeasonController {
