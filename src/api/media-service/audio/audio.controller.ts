@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
-import { AudioService } from './audio.service';
+import { AudioService } from './service/audio.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -17,10 +17,10 @@ export class AudioController {
   @Post()
   @UseInterceptors(FileInterceptor('audio'))
   addAudio(
-    @Body() userInputs: CreateAudioDto,
+    @Body() payload: CreateAudioDto,
     @UploadedFile() uploadedFile: Express.Multer.File
   ) {
-    return this.audioService.addAudio(userInputs, uploadedFile)
+    return this.audioService.addAudio({ payload, uploadedFile })
   }
 
   @Get()

@@ -1,10 +1,8 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document, Types } from "mongoose";
+import { Types } from "mongoose";
 import { Upload } from "src/api/upload-service/upload/schemas/upload.schema";
 import { Movie } from "../../movie/schemas/movie.schema";
 import { Episode } from "../../series/episode/schemas/episode.schema";
-
-export type AudioDocument = Audio & Document
 
 @Schema()
 export class Audio {
