@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, Post, UploadedFile, UseGuards } from '@nestjs/common';
-import { ActorService } from './actor.service';
+import { ActorService } from './service/actor.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -18,10 +18,10 @@ export class ActorController {
   @UploadImage()
   @Post()
   addActor(
-    @Body() userInputs: CreateActorDto,
+    @Body() payload: CreateActorDto,
     @UploadedFile() uploadedImage: Express.Multer.File
   ) {
-    return this.actorService.addActor(userInputs, uploadedImage)
+    return this.actorService.addActor({ payload, uploadedImage })
   }
 
   @Get()

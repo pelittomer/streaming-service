@@ -1,12 +1,10 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document, Types } from "mongoose";
+import { Types } from "mongoose";
 import { Gender } from "src/common/types";
 import { Series } from "../../series/series/schemas/series.schema";
 import { Movie } from "../../movie/schemas/movie.schema";
 import { Upload } from "src/api/upload-service/upload/schemas/upload.schema";
 import { forwardRef } from "@nestjs/common";
-
-export type ActorDocument = Actor & Document
 
 @Schema()
 export class Actor {

@@ -6,7 +6,7 @@ import { SharedUtilsService } from "src/common/utils/shared-utils.service";
 import { UploadService } from "src/api/upload-service/upload/upload.service";
 import { Category } from "../../category/schemas/category.schema";
 import { Director } from "../../director/schemas/director.schema";
-import { Actor } from "../../actor/schemas/actor.schema";
+import { Actor } from "../../actor/entities/actor.entity";
 
 @Injectable()
 export class SeriesRepository {

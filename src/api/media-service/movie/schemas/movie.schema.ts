@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 import { Director } from "../../director/schemas/director.schema";
-import { Actor } from "../../actor/schemas/actor.schema";
+import { Actor } from "../../actor/entities/actor.entity";
 import { Upload } from "src/api/upload-service/upload/schemas/upload.schema";
 import { Category } from "../../category/schemas/category.schema";
 
