@@ -5,7 +5,7 @@ import { Types } from 'mongoose';
 import { AddAudioParams, IAudioService, TAudioData } from './audio.service.interface';
 import { AudioUtilsService } from '../utils/audio-utils.service';
 import { TFindAudio } from '../repository/audio.repository.interface';
-import { AUDIO_MESSAGES } from '../constants/error-messages.constant';
+import { AUDIO_MESSAGES } from '../constants/audio.message';
 
 @Injectable()
 export class AudioService implements IAudioService {

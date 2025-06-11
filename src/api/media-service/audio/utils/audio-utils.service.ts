@@ -3,7 +3,7 @@ import { IAudioUtilsService } from "./audio-utils.service.interface";
 import { CreateAudioDto } from "../dto/create-audio.dto";
 import { MovieRepository } from "../../movie/movie.repository";
 import { EpisodeRepository } from "../../series/episode/episode.repository";
-import { AUDIO_MESSAGES } from "../constants/error-messages.constant";
+import { AUDIO_MESSAGES } from "../constants/audio.message";
 import { Types } from "mongoose";
 
 @Injectable()

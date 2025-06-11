@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
-import { CategoryService } from './category.service';
+import { CategoryService } from './service/category.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -14,14 +14,13 @@ export class CategoryController {
   @Roles(Role.Admin)
   @Post()
   addCategory(
-    @Body() userInputs: CreateCategoryDto
+    @Body() payload: CreateCategoryDto
   ) {
-    return this.categoryService.addCategory(userInputs)
+    return this.categoryService.addCategory(payload)
   }
 
   @Get()
   getAllCategories() {
     return this.categoryService.getAllCategories()
   }
-
 }
