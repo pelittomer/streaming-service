@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { UserService } from './user.service';
+import { UserService } from './service/user.service';
 import { UserController } from './user.controller';
-import { UserRepository } from './user.repository';
+import { UserRepository } from './repository/user.repository';
 import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from './schemas/user.schema';
+import { User, UserSchema } from './entities/user.entity';
 import { SharedUtilsModule } from 'src/common/utils/shared-utils.module';
 
 @Module({

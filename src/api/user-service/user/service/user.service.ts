@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { UserRepository, UserWithoutSensitiveInfo } from './user.repository';
 import { Request } from 'express';
 import { SharedUtilsService } from 'src/common/utils/shared-utils.service';
+import { UserRepository } from '../repository/user.repository';
+import { UserWithoutSensitiveInfo } from '../repository/user.repository.interface';
+import { IUserService } from './user.service.interface';
 
 @Injectable()
-export class UserService {
+export class UserService implements IUserService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly sharedUtilsService: SharedUtilsService,
@@ -14,5 +16,4 @@ export class UserService {
     const user = this.sharedUtilsService.getUserInfo(req)
     return this.userRepository.findCurrentUser(user.userId)
   }
-
 }

@@ -1,14 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { User, UserDocument } from "./schemas/user.schema";
+import { User } from "../entities/user.entity";
 import { Model, Types } from "mongoose";
-
-type UserCreationInput = Pick<User, 'username' | 'email' | 'password'>
-type UserIdentifierQuery = Partial<Pick<User, 'email' | 'username'>>
-export type UserWithoutSensitiveInfo = Omit<UserDocument, 'emailVerificationToken' | 'password'>
+import { UserDocument } from "../entities/types";
+import { IUserRepository, UserCreationInput, UserIdentifierQuery, UserWithoutSensitiveInfo } from "./user.repository.interface";
 
 @Injectable()
-export class UserRepository {
+export class UserRepository implements IUserRepository {
     constructor(
         @InjectModel(User.name) private userModel: Model<User>,
     ) { }

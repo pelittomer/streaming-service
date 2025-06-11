@@ -1,9 +1,5 @@
 import { Types } from "mongoose";
-
-export enum Role {
-    Customer = "CUSTOMER",
-    Admin = "ADMIN"
-}
+import { Role } from "src/api/user-service/user/entities/types";
 
 export enum ListStatus {
     Public = "PUBLIC",
@@ -57,7 +53,7 @@ export enum Gender {
 export interface UserInfo {
     userId: Types.ObjectId;
     username: string;
-    roles: Role
+    roles: Role;
 }
 
 enum MaxConnections {

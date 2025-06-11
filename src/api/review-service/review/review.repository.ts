@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Review } from "./schema/review.schema";
 import { Model } from "mongoose";
-import { User } from "src/api/user-service/user/schemas/user.schema";
+import { User } from "src/api/user-service/user/entities/user.entity";
 
 export interface PopulatedReview extends Omit<Review, 'user'> {
     user: Pick<User, 'username' | 'roles'>;
