@@ -5,7 +5,7 @@ import { Request } from 'express';
 import { SharedUtilsService } from 'src/common/utils/shared-utils.service';
 import { Types } from 'mongoose';
 import { MovieRepository } from 'src/api/media-service/movie/repository/movie.repository';
-import { EpisodeRepository } from 'src/api/media-service/series/episode/episode.repository';
+import { EpisodeRepository } from 'src/api/media-service/series/episode/repository/episode.repository';
 import { PartialGetReviewDto } from './dto/get-review.dto';
 import * as ErrorMessages from "./constants/error-messages.constant";
 import { WatchedHistoryRepository } from 'src/api/profile-service/watched-history/watched-history.repository';

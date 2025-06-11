@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Types } from "mongoose";
 import { Upload } from "src/api/upload-service/upload/schemas/upload.schema";
 import { Movie } from "../../movie/entities/movie.entity";
-import { Episode } from "../../series/episode/schemas/episode.schema";
+import { Episode } from "../../series/episode/entities/episode.entity";
 
 @Schema()
 export class Audio {

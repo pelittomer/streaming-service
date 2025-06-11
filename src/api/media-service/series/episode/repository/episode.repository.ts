@@ -1,22 +1,21 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Episode, EpisodeDocument } from "./schemas/episode.schema";
+import { Episode } from "../entities/episode.entity";
 import { Model, Types } from "mongoose";
+import { ExistsEpiosdeOptions, IEpisodeRepository, TExistsEpisode } from "./episode.repository.interface";
 
 @Injectable()
-export class EpisodeRepository {
+export class EpisodeRepository implements IEpisodeRepository{
     constructor(
         @InjectModel(Episode.name) private episodeModel: Model<Episode>
     ) { }
 
-    async exists(
-        queryFields: Partial<Episode | Pick<EpisodeDocument, '_id'>>
-    ): Promise<Pick<EpisodeDocument, '_id'> | null> {
+    async exists(queryFields:Partial<ExistsEpiosdeOptions>): Promise<TExistsEpisode> {
         return await this.episodeModel.exists(queryFields)
     }
 
-    async create(userInputs: Partial<Episode>): Promise<void> {
-        await this.episodeModel.create(userInputs)
+    async create(payload: Partial<Episode>): Promise<void> {
+        await this.episodeModel.create(payload)
     }
 
     async find(queryFields: Partial<Episode>): Promise<Episode[]> {

@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 import { Movie } from "src/api/media-service/movie/entities/movie.entity";
-import { Episode } from "src/api/media-service/series/episode/schemas/episode.schema";
+import { Episode } from "src/api/media-service/series/episode/entities/episode.entity";
 import { User } from "src/api/user-service/user/entities/user.entity";
 
 export type ReviewDocument = Review & Document

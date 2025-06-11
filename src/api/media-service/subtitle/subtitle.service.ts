@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { SubtitleRepository } from './subtitle.repository';
 import { CreateSubtitleDto } from './dto/create-subtitle.dto';
 import { MovieRepository } from '../movie/repository/movie.repository';
-import { EpisodeRepository } from '../series/episode/episode.repository';
+import { EpisodeRepository } from '../series/episode/repository/episode.repository';
 import { Types } from 'mongoose';
 import { PartialGetSubtitleDto } from './dto/get-subtitle.dto';
 import { SubtitleDocument } from './schemas/subtitle.schema';

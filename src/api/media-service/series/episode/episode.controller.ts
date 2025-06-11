@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
-import { EpisodeService } from './episode.service';
+import { EpisodeService } from './service/episode.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -16,8 +16,8 @@ export class EpisodeController {
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Admin)
   @Post()
-  addEpisode(@Body() userInputs: CreateEpisodeDto) {
-    return this.episodeService.addEpisode(userInputs)
+  addEpisode(@Body() payload: CreateEpisodeDto) {
+    return this.episodeService.addEpisode(payload)
   }
 
   @Get()
