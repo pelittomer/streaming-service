@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Query, Req, UseGuards } from '@nestjs/common';
-import { ReviewService } from './review.service';
+import { ReviewService } from './service/review.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { Request } from 'express';
@@ -12,10 +12,10 @@ export class ReviewController {
   @UseGuards(AuthGuard)
   @Post('')
   addReview(
-    @Body() userInputs: CreateReviewDto,
+    @Body() payload: CreateReviewDto,
     @Req() req: Request
   ) {
-    return this.reviewService.addReview(userInputs, req)
+    return this.reviewService.addReview({ payload, req })
   }
 
   @Get()

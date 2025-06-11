@@ -1,21 +1,18 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Review } from "./schema/review.schema";
+import { Review } from "../schema/review.schema";
 import { Model } from "mongoose";
 import { User } from "src/api/user-service/user/entities/user.entity";
-
-export interface PopulatedReview extends Omit<Review, 'user'> {
-    user: Pick<User, 'username' | 'roles'>;
-}
+import { IReviewRepository, PopulatedReview } from "./review.repository.interface";
 
 @Injectable()
-export class ReviewRepository {
+export class ReviewRepository implements IReviewRepository {
     constructor(
         @InjectModel(Review.name) private reviewModel: Model<Review>
     ) { }
 
-    async create(userInputs: Partial<Review>): Promise<void> {
-        await this.reviewModel.create(userInputs)
+    async create(payload: Partial<Review>): Promise<void> {
+        await this.reviewModel.create(payload)
     }
 
     async find(queryFields: Partial<Review>): Promise<PopulatedReview[]> {
