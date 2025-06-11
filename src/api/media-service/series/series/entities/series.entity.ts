@@ -1,10 +1,8 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document, Types } from "mongoose";
+import { Types } from "mongoose";
 import { Actor } from "src/api/media-service/actor/entities/actor.entity";
 import { Category } from "src/api/media-service/category/entities/category.entity";
 import { Upload } from "src/api/upload-service/upload/schemas/upload.schema";
-
-export type SeriesDocument = Series & Document
 
 @Schema()
 export class Series {

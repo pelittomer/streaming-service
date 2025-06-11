@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { ISeasonUtilsService } from "./season-utils.service.interface";
 import { Types } from "mongoose";
-import { SeriesRepository } from "../../series/series.repository";
+import { SeriesRepository } from "../../series/repository/series.repository";
 import { SEASON_MESSAGES } from "../constants/season.message";
 
 @Injectable()

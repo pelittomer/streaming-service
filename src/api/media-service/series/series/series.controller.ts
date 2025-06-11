@@ -1,5 +1,5 @@
-import { BadRequestException, Body, Controller, Get, Param, Post, Query, UploadedFile, UseGuards } from '@nestjs/common';
-import { SeriesService } from './series.service';
+import { Body, Controller, Get, Param, Post, Query, UploadedFile, UseGuards } from '@nestjs/common';
+import { SeriesService } from './service/series.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -19,13 +19,10 @@ export class SeriesController {
   @Post()
   @UploadImage()
   addSeries(
-    @Body() userInputs: CreateSeriesDto,
+    @Body() payload: CreateSeriesDto,
     @UploadedFile() uploadedFile: Express.Multer.File
   ) {
-    if (!uploadedFile) {
-      throw new BadRequestException('Poster is required')
-    }
-    return this.seriesService.addSeries(userInputs, uploadedFile)
+    return this.seriesService.addSeries({ payload, uploadedFile })
   }
 
   @Get()

@@ -3,7 +3,7 @@ import { Types } from "mongoose";
 import { Upload } from "src/api/upload-service/upload/schemas/upload.schema";
 import { FilmographyRole, Gender } from "src/common/types";
 import { Movie } from "../../movie/entities/movie.entity";
-import { Series } from "../../series/series/schemas/series.schema";
+import { Series } from "../../series/series/entities/series.entity";
 import { forwardRef } from "@nestjs/common";
 
 @Schema()

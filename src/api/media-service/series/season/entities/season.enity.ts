@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Types } from "mongoose";
-import { Series } from "../../series/schemas/series.schema";
+import { Series } from "../../series/entities/series.entity";
 import { Upload } from "src/api/upload-service/upload/schemas/upload.schema";
 
 @Schema({ timestamps: true })

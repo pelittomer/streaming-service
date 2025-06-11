@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 import { Movie } from "src/api/media-service/movie/entities/movie.entity";
-import { Series } from "src/api/media-service/series/series/schemas/series.schema";
+import { Series } from "src/api/media-service/series/series/entities/series.entity";
 import { Profile } from "../../profile/schemas/profile.schema";
 
 export type FavoriteDocument = Favorite & Document

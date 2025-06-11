@@ -3,7 +3,7 @@ import { FavoriteRepository } from './favorite.repository';
 import { Request } from 'express';
 import { SharedUtilsService } from 'src/common/utils/shared-utils.service';
 import { MovieRepository } from 'src/api/media-service/movie/repository/movie.repository';
-import { SeriesRepository } from 'src/api/media-service/series/series/series.repository';
+import { SeriesRepository } from 'src/api/media-service/series/series/repository/series.repository';
 import { Types } from 'mongoose';
 import { Favorite } from './schemas/favorite.schema';
 import * as ErrorMessages from "./constants/error-messages.constant"
