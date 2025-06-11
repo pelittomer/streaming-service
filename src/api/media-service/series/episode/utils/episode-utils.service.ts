@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
-import { SeasonRepository } from "../../season/season.repository";
 import { EPISODE_MESSAGES } from "../constants/episode.message";
 import { Types } from "mongoose";
 import { Episode } from "../entities/episode.entity";
 import { EpisodeRepository } from "../repository/episode.repository";
 import { IEpisodeUtilsService } from "./episode-utils.service.interface";
+import { SeasonRepository } from "../../season/repository/season.repository";
 
 @Injectable()
 export class EpisodeUtilsService implements IEpisodeUtilsService{

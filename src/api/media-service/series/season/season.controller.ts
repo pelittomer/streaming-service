@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Query, UploadedFile, UseGuards } from '@nestjs/common';
-import { SeasonService } from './season.service';
+import { SeasonService } from './service/season.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -17,10 +17,10 @@ export class SeasonController {
   @Post()
   @UploadImage()
   addSeason(
-    @Body() userInputs: CreateSeasonDto,
+    @Body() payload: CreateSeasonDto,
     @UploadedFile() uploadedFile: Express.Multer.File
   ) {
-    return this.seasonService.addSeason(userInputs, uploadedFile)
+    return this.seasonService.addSeason({ payload, uploadedFile })
   }
 
   @Get()
