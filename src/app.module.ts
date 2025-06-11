@@ -25,8 +25,9 @@ import { DirectorModule } from './api/media-service/director/director.module';
 import { OnlineStatusGateway } from './common/gateways/online-status/online-status.gateway';
 import { ScheduleModule } from '@nestjs/schedule';
 import { minutes, seconds, ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggerModule } from './modules/logger/logger.module';
+import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 
 @Module({
   imports: [
@@ -90,6 +91,10 @@ import { LoggerModule } from './modules/logger/logger.module';
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TransformInterceptor,
     },
     AppService,
     OnlineStatusGateway
