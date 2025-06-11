@@ -5,7 +5,7 @@ import { Model, Types } from "mongoose";
 import { SharedUtilsService } from "src/common/utils/shared-utils.service";
 import { UploadService } from "src/api/upload-service/upload/upload.service";
 import { Category } from "../../category/entities/category.entity";
-import { Director } from "../../director/schemas/director.schema";
+import { Director } from "../../director/entities/director.entity";
 import { Actor } from "../../actor/entities/actor.entity";
 
 @Injectable()

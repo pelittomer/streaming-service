@@ -1,5 +1,4 @@
 import { Body, Controller, Get, Param, Post, UploadedFile, UseGuards } from '@nestjs/common';
-import { DirectorService } from './director.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -8,6 +7,7 @@ import { CreateDirectorDto } from './dto/create-director.dto';
 import { ParseObjectIdPipe } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 import { Role } from 'src/api/user-service/user/entities/types';
+import { DirectorService } from './service/director.service';
 
 @Controller('director')
 export class DirectorController {
@@ -18,10 +18,10 @@ export class DirectorController {
   @UploadImage()
   @Post()
   addDirector(
-    @Body() userInputs: CreateDirectorDto,
+    @Body() payload: CreateDirectorDto,
     @UploadedFile() uploadedImage: Express.Multer.File
   ) {
-    return this.directorService.addDirector(userInputs, uploadedImage)
+    return this.directorService.addDirector({ payload, uploadedImage })
   }
 
   @Get()

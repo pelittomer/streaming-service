@@ -1,12 +1,10 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document, Types } from "mongoose";
+import { Types } from "mongoose";
 import { Upload } from "src/api/upload-service/upload/schemas/upload.schema";
 import { FilmographyRole, Gender } from "src/common/types";
 import { Movie } from "../../movie/schemas/movie.schema";
 import { Series } from "../../series/series/schemas/series.schema";
 import { forwardRef } from "@nestjs/common";
-
-export type DirectorDocument = Director & Document
 
 @Schema()
 export class Director {

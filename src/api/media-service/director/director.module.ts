@@ -1,15 +1,16 @@
 import { Module } from '@nestjs/common';
-import { DirectorService } from './director.service';
 import { DirectorController } from './director.controller';
-import { DirectorRepository } from './director.repository';
+import { DirectorRepository } from './repository/director.repository';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Director, DirectorSchema } from './schemas/director.schema';
+import { Director, DirectorSchema } from './entities/director.entity';
 import { SharedUtilsModule } from 'src/common/utils/shared-utils.module';
 import { UploadModule } from 'src/api/upload-service/upload/upload.module';
+import { DirectorService } from './service/director.service';
+import { DirectorUtilsService } from './utils/director-utils.service';
 
 @Module({
   controllers: [DirectorController],
-  providers: [DirectorService, DirectorRepository],
+  providers: [DirectorService, DirectorRepository,DirectorUtilsService],
   imports: [
     MongooseModule.forFeature([{ name: Director.name, schema: DirectorSchema }]),
     SharedUtilsModule, UploadModule
