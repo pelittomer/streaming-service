@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
-import { SubtitleService } from './subtitle.service';
+import { SubtitleService } from './service/subtitle.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
@@ -17,10 +17,10 @@ export class SubtitleController {
   @UseInterceptors(FileInterceptor('file'))
   @Post()
   addSubtitle(
-    @Body() userInputs: CreateSubtitleDto,
+    @Body() payload: CreateSubtitleDto,
     @UploadedFile() uploadedFile: Express.Multer.File
   ) {
-    return this.subtitleService.addSubtitle(userInputs, uploadedFile)
+    return this.subtitleService.addSubtitle({ payload, uploadedFile })
   }
 
   @Get()
