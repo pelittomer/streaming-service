@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { FavoriteRepository } from './favorite.repository';
 import { Request } from 'express';
 import { SharedUtilsService } from 'src/common/utils/shared-utils.service';
-import { MovieRepository } from 'src/api/media-service/movie/movie.repository';
+import { MovieRepository } from 'src/api/media-service/movie/repository/movie.repository';
 import { SeriesRepository } from 'src/api/media-service/series/series/series.repository';
 import { Types } from 'mongoose';
 import { Favorite } from './schemas/favorite.schema';

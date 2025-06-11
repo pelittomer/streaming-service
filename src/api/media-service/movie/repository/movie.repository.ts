@@ -1,47 +1,37 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Movie, MovieDocument } from "./schemas/movie.schema";
+import { Movie } from "../entities/movie.entity";
 import { Model, Types } from "mongoose";
-import { CreateMovieDto } from "./dto/create-movie.dto";
 import { UploadService } from "src/api/upload-service/upload/upload.service";
 import { SharedUtilsService } from "src/common/utils/shared-utils.service";
-import { Category } from "../category/entities/category.entity";
-import { Director } from "../director/entities/director.entity";
-import { Actor } from "../actor/entities/actor.entity";
+import { Category } from "../../category/entities/category.entity";
+import { Director } from "../../director/entities/director.entity";
+import { Actor } from "../../actor/entities/actor.entity";
+import { CreateMovieOptions, ExistsMovieOptions, FindMovieOptions, IMovieRepository, TExistsMovie, TFindMovie } from "./movie.repository.interface";
 
 @Injectable()
-export class MovieRepository {
+export class MovieRepository implements IMovieRepository {
     constructor(
         @InjectModel(Movie.name) private movieModel: Model<Movie>,
         private readonly uploadService: UploadService,
         private readonly sharedUtilsService: SharedUtilsService,
     ) { }
 
-    async exists(
-        queryFields: Partial<Movie | Pick<MovieDocument, '_id'>>
-    ): Promise<Pick<MovieDocument, '_id'> | null> {
+    async exists(queryFields: Partial<ExistsMovieOptions>): Promise<TExistsMovie> {
         return await this.movieModel.exists(queryFields)
     }
 
-    async create(
-        userInputs: CreateMovieDto,
-        uploadedFile: Express.Multer.File
-    ): Promise<void> {
+    async create({ payload, uploadedFile }: CreateMovieOptions): Promise<void> {
         await this.sharedUtilsService.executeTransaction(async (session) => {
             const posterId = await this.uploadService.createFile(uploadedFile, session)
             await this.movieModel.create({
-                ...userInputs,
+                ...payload,
                 poster: posterId
             })
         })
     }
 
-    async find(
-        limit: number,
-        startIndex: number,
-        filter: any,
-        sortCriteria: any
-    ): Promise<Pick<MovieDocument, '_id' | 'title' | 'synopsis' | 'rate' | 'poster'>[]> {
+    async find({ filter, limit, sortCriteria, startIndex }: FindMovieOptions): Promise<TFindMovie> {
         return this.movieModel.find(filter)
             .sort(sortCriteria)
             .skip(startIndex)

@@ -1,5 +1,4 @@
 import { Body, Controller, Get, Param, Post, Query, UploadedFile, UseGuards } from '@nestjs/common';
-import { MovieService } from './movie.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -9,6 +8,7 @@ import { PartialGetMovieDto } from './dto/get-movie.dto';
 import { ParseObjectIdPipe } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 import { Role } from 'src/api/user-service/user/entities/types';
+import { MovieService } from './service/movie.service';
 
 @Controller('movie')
 export class MovieController {
@@ -19,10 +19,10 @@ export class MovieController {
   @Post()
   @UploadImage()
   addMovie(
-    @Body() userInputs: CreateMovieDto,
+    @Body() payload: CreateMovieDto,
     @UploadedFile() uploadedFile: Express.Multer.File
   ) {
-    return this.movieService.addMovie(userInputs, uploadedFile)
+    return this.movieService.addMovie({ payload, uploadedFile })
   }
 
   @Get()

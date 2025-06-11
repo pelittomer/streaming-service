@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 import { Upload } from "src/api/upload-service/upload/schemas/upload.schema";
-import { Movie } from "../../movie/schemas/movie.schema";
+import { Movie } from "../../movie/entities/movie.entity";
 import { Episode } from "../../series/episode/schemas/episode.schema";
 
 export type SubtitleDocument = Subtitle & Document
