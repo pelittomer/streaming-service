@@ -1,16 +1,18 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Payment, PaymentDocument } from "./schemas/payment.schema";
+import { Payment } from "../entities/payment.entity";
 import { Model, Types } from "mongoose";
+import { PaymentDocument } from "../entities/types";
+import { FindByIdAndUpdatePaymentOptions, IPaymentRepository, TFindPayment } from "./payment.repository.interface";
 
 @Injectable()
-export class PaymentRepository {
+export class PaymentRepository implements IPaymentRepository {
     constructor(
         @InjectModel(Payment.name) private paymentModel: Model<Payment>
     ) { }
 
-    async create(userInputs: Partial<Payment>): Promise<PaymentDocument> {
-        return await this.paymentModel.create(userInputs)
+    async create(payload: Partial<Payment>): Promise<PaymentDocument> {
+        return await this.paymentModel.create(payload)
     }
 
     async findSubscription(queryFields: Partial<Payment>): Promise<Payment | null> {
@@ -24,16 +26,13 @@ export class PaymentRepository {
         return await this.paymentModel.findById(paymentId)
     }
 
-    async findByIdAndUpdate(
-        paymentId: Types.ObjectId,
-        userInputs: Partial<Payment>
-    ): Promise<void> {
-        await this.paymentModel.findByIdAndUpdate(paymentId, userInputs)
+    async findByIdAndUpdate({ payload, paymentId }: FindByIdAndUpdatePaymentOptions): Promise<void> {
+        await this.paymentModel.findByIdAndUpdate(paymentId, payload)
     }
 
     async find(
         queryFields: Partial<Payment | any>
-    ): Promise<Pick<PaymentDocument, '_id' | 'subscriptionEndDate'>[]> {
+    ): Promise<TFindPayment> {
         return await this.paymentModel.find(queryFields)
             .select('subscriptionEndDate')
             .lean()

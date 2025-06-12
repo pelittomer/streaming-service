@@ -4,7 +4,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { PaymentRepository } from 'src/api/payment-service/payment/payment.repository';
+import { PaymentRepository } from 'src/api/payment-service/payment/repository/payment.repository';
 import { maxConnections } from 'src/common/types';
 import { Types } from 'mongoose';
 import { Logger } from '@nestjs/common';

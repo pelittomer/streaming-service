@@ -1,5 +1,5 @@
 import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
-import { PaymentService } from './payment.service';
+import { PaymentService } from './service/payment.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
@@ -15,9 +15,9 @@ export class PaymentController {
   @Roles(Role.Customer)
   @Post('')
   addPayment(
-    @Body() userInputs: CreatePaymentDto,
+    @Body() payload: CreatePaymentDto,
     @Req() req: Request
   ) {
-    return this.paymentService.addPayment(userInputs, req)
+    return this.paymentService.addPayment({ payload, req })
   }
 }

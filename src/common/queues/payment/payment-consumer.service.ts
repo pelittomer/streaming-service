@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, Logger, OnModuleInit } from "@nestjs/common";
 import amqp, { ChannelWrapper } from "amqp-connection-manager";
 import { ConfirmChannel } from "amqplib";
-import { PaymentRepository } from "src/api/payment-service/payment/payment.repository";
+import { PaymentRepository } from "src/api/payment-service/payment/repository/payment.repository";
 import { PaymentStatus } from "src/common/types";
 
 @Injectable()
@@ -57,10 +57,10 @@ export class PaymentConsumerService implements OnModuleInit {
                 subscriptionEndDate = new Date(now.setDate(now.getDate() + this.subscriptionDurationDays))
             }
 
-            await this.paymentRepository.findByIdAndUpdate(
+            await this.paymentRepository.findByIdAndUpdate({
                 paymentId,
-                { payment_status: paymentStatus, subscriptionEndDate }
-            )
+                payload: { payment_status: paymentStatus, subscriptionEndDate }
+            })
 
             this.logger.log(`Payment record with ID ${paymentId} updated. New status: ${paymentStatus}, Subscription End Date: ${subscriptionEndDate}`)
             channel.ack(message)
