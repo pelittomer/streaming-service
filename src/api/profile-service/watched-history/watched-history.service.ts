@@ -7,7 +7,7 @@ import { Types } from 'mongoose';
 import { WatchedHistory } from './schemas/watched-history.schema';
 import { GetWatchedHistoryDto } from './dto/get-watched-history.dto';
 import { WatchedHistoryQuery } from './dto/watched-history-query.dto';
-import { ProfileRepository } from '../profile/profile.repository';
+import { ProfileRepository } from '../profile/repository/profile.repository';
 import * as ErrorMessages from "./constants/error-messages.constant"
 
 @Injectable()

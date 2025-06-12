@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 import { Movie } from "src/api/media-service/movie/entities/movie.entity";
 import { Episode } from "src/api/media-service/series/episode/entities/episode.entity";
-import { Profile } from "../../profile/schemas/profile.schema";
+import { Profile } from "../../profile/entities/profile.entity";
 
 export type WatchedHistoryDocument = WatchedHistory & Document
 

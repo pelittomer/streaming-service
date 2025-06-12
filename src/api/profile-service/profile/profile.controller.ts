@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, Post, Put, Req, UploadedFile, UseGuards } from '@nestjs/common';
-import { ProfileService } from './profile.service';
+import { ProfileService } from './service/profile.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { Request } from 'express';
 import { CreateProfileDto } from './dto/create-profile.dto';
@@ -16,11 +16,11 @@ export class ProfileController {
   @Post()
   @UploadImage()
   addProfile(
-    @Body() userInputs: CreateProfileDto,
+    @Body() payload: CreateProfileDto,
     @Req() req: Request,
     @UploadedFile() uploadedImage: Express.Multer.File
   ) {
-    return this.profileService.addProfile(userInputs, req, uploadedImage)
+    return this.profileService.addProfile({ payload, req, uploadedImage })
   }
 
   @UseGuards(AuthGuard)
@@ -29,7 +29,7 @@ export class ProfileController {
     @Req() req: Request,
     @Param('id', ParseObjectIdPipe) profileId: Types.ObjectId
   ) {
-    return this.profileService.getCurrentProfile(profileId, req)
+    return this.profileService.getCurrentProfile({ profileId, req })
   }
 
   @UseGuards(AuthGuard)
@@ -44,11 +44,11 @@ export class ProfileController {
   @Put(':id')
   @UploadImage()
   updateMyProfile(
-    @Body() userInputs: UpdateProfileDto,
+    @Body() payload: UpdateProfileDto,
     @Req() req: Request,
     @UploadedFile() uploadedImage: Express.Multer.File,
     @Param('id', ParseObjectIdPipe) profileId: Types.ObjectId
   ) {
-    return this.profileService.updateMyProfile(userInputs, req, uploadedImage, profileId)
+    return this.profileService.updateMyProfile({ payload, req, uploadedImage, profileId })
   }
 }

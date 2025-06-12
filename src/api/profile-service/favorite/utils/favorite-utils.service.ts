@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { IFavoriteUtilsService, ProcessFavoriteParams, ValidateMediaExistenceParams, ValidateProfileOwnershipParams } from "./favorite-utils.service.interface";
 import { SeriesRepository } from "src/api/media-service/series/series/repository/series.repository";
-import { ProfileRepository } from "../../profile/profile.repository";
+import { ProfileRepository } from "../../profile/repository/profile.repository";
 import { MovieRepository } from "src/api/media-service/movie/repository/movie.repository";
 import { Types } from "mongoose";
 import { SharedUtilsService } from "src/common/utils/shared-utils.service";
