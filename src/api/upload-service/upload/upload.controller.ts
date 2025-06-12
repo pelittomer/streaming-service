@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Res, UseGuards } from '@nestjs/common';
-import { UploadService } from './upload.service';
+import { UploadService } from './service/upload.service';
 import { ParseObjectIdPipe } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 import { Response } from 'express';
@@ -23,6 +23,6 @@ export class UploadController {
     @Param('id', ParseObjectIdPipe) fileId: Types.ObjectId,
     @Res() res: Response
   ) {
-    this.uploadService.getAndStreamVideo(fileId, res)
+    this.uploadService.getAndStreamVideo({ fileId, res })
   }
 }

@@ -3,7 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Actor } from "../entities/actor.entity";
 import { Model, Types } from "mongoose";
 import { SharedUtilsService } from "src/common/utils/shared-utils.service";
-import { UploadService } from "src/api/upload-service/upload/upload.service";
+import { UploadService } from "src/api/upload-service/upload/service/upload.service";
 import { ActorDocument } from "../entities/types";
 import { CreateActorOptions, IActorRepository, TFindActor } from "./actor.repository.interface";
 
@@ -17,7 +17,7 @@ export class ActorRepository implements IActorRepository {
 
     async create({ payload, uploadedImage }: CreateActorOptions): Promise<void> {
         await this.sharedUtilsService.executeTransaction(async (session) => {
-            const imageId = await this.uploadService.createFile(uploadedImage, session)
+            const imageId = await this.uploadService.createFile({ uploadedFile: uploadedImage, session })
             await this.actorModel.create([{
                 ...payload,
                 profilePicture: imageId

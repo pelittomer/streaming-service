@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Types } from "mongoose";
-import { Upload } from "src/api/upload-service/upload/schemas/upload.schema";
+import { Upload } from "src/api/upload-service/upload/entities/upload.entity";
 import { FilmographyRole, Gender } from "src/common/types";
 import { Movie } from "../../movie/entities/movie.entity";
 import { Series } from "../../series/series/entities/series.entity";

@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { SharedUtilsService } from "src/common/utils/shared-utils.service";
-import { UploadService } from "src/api/upload-service/upload/upload.service";
+import { UploadService } from "src/api/upload-service/upload/service/upload.service";
 import { Category } from "../../../category/entities/category.entity";
 import { Director } from "../../../director/entities/director.entity";
 import { Actor } from "../../../actor/entities/actor.entity";
@@ -23,7 +23,7 @@ export class SeriesRepository implements ISeriesRepository {
 
     async create({ payload, uploadedFile }: CreateSeriesOptions): Promise<void> {
         await this.sharedUtilsService.executeTransaction(async (session) => {
-            const poster = await this.uploadService.createFile(uploadedFile, session)
+            const poster = await this.uploadService.createFile({ uploadedFile, session })
             await this.seriesModel.create([{ ...payload, poster }], { session })
         })
     }

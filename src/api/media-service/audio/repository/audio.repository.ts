@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Audio } from "../entities/audio.entity";
 import { Model } from "mongoose";
-import { UploadService } from "src/api/upload-service/upload/upload.service";
+import { UploadService } from "src/api/upload-service/upload/service/upload.service";
 import { CreateAudioOptions, FindAudioOptions, IAudioRepository, TFindAudio } from "./audio.repository.interface";
 
 @Injectable()

@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { SharedUtilsService } from "src/common/utils/shared-utils.service";
-import { UploadService } from "src/api/upload-service/upload/upload.service";
+import { UploadService } from "src/api/upload-service/upload/service/upload.service";
 import { CreateSeasonOptions, ExistsSeasonOptions, ISeasonRepository, TExistsSeason, TFindSeason } from "./season.repository.interface";
 import { Season } from "../entities/season.enity";
 
@@ -18,7 +18,7 @@ export class SeasonRepository implements ISeasonRepository {
         let posterId: Types.ObjectId | undefined
         await this.sharedUtilsService.executeTransaction(async (session) => {
             if (uploadedFile) {
-                posterId = await this.uploadService.createFile(uploadedFile, session)
+                posterId = await this.uploadService.createFile({ uploadedFile, session })
             }
             await this.seasonModel.create([{ ...payload, poster: posterId }], { session })
         })

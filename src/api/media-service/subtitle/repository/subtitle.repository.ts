@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Subtitle } from "../schemas/subtitle.schema";
 import { Model } from "mongoose";
-import { UploadService } from "src/api/upload-service/upload/upload.service";
+import { UploadService } from "src/api/upload-service/upload/service/upload.service";
 import { CreateSubtitleOptions, FindSubtitleOptions, ISubtitleRepository, TFindSubtitle } from "./subtitle.repository.interface";
 
 @Injectable()

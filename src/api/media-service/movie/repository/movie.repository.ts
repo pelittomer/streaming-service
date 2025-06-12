@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Movie } from "../entities/movie.entity";
 import { Model, Types } from "mongoose";
-import { UploadService } from "src/api/upload-service/upload/upload.service";
+import { UploadService } from "src/api/upload-service/upload/service/upload.service";
 import { SharedUtilsService } from "src/common/utils/shared-utils.service";
 import { Category } from "../../category/entities/category.entity";
 import { Director } from "../../director/entities/director.entity";
@@ -23,7 +23,7 @@ export class MovieRepository implements IMovieRepository {
 
     async create({ payload, uploadedFile }: CreateMovieOptions): Promise<void> {
         await this.sharedUtilsService.executeTransaction(async (session) => {
-            const posterId = await this.uploadService.createFile(uploadedFile, session)
+            const posterId = await this.uploadService.createFile({uploadedFile, session})
             await this.movieModel.create({
                 ...payload,
                 poster: posterId

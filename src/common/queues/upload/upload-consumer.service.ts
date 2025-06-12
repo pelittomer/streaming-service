@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, Logger, OnModuleInit } from "@nestjs/c
 import amqp, { ChannelWrapper } from "amqp-connection-manager";
 import { ConfirmChannel } from "amqplib";
 import * as sharp from "sharp";
-import { UploadRepository } from "src/api/upload-service/upload/upload.repository";
+import { UploadRepository } from "src/api/upload-service/upload/repository/upload.repository";
 
 @Injectable()
 export class UploadConsumerService implements OnModuleInit {
@@ -56,7 +56,7 @@ export class UploadConsumerService implements OnModuleInit {
                 updateData = fileBuffer
             }
 
-            await this.uploadRepository.findOneAndUpdate(fileId, { data: updateData })
+            await this.uploadRepository.findOneAndUpdate({ fileId, data: { data: updateData } })
 
             this.logger.log(`Upload processed successfully for file ID: ${fileId}`)
             channel.ack(message)

@@ -3,7 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Profile } from "../entities/profile.entity";
 import { Model } from "mongoose";
 import { SharedUtilsService } from "src/common/utils/shared-utils.service";
-import { UploadService } from "src/api/upload-service/upload/upload.service";
+import { UploadService } from "src/api/upload-service/upload/service/upload.service";
 import { FavoriteRepository } from "../../favorite/repository/favorite.repository";
 import { ProfileDocument } from "../entities/types";
 import { CreateProfileOptions, ExistsProfileOptions, FindOneAndUpdateProfileOptions, FindOneProfileOptions, IProfileRepository, TExistsProfile } from "./profile.repository.interface";
@@ -23,7 +23,7 @@ export class ProfileRepository implements IProfileRepository {
 
     async create({ queryFields, uploadedImage }: CreateProfileOptions): Promise<void> {
         await this.sharedUtilsService.executeTransaction(async (session) => {
-            const imageId = await this.uploadService.createFile(uploadedImage, session)
+            const imageId = await this.uploadService.createFile({ uploadedFile: uploadedImage, session })
             const [newProfile] = await this.profileModel.create([{
                 ...queryFields,
                 avatar: imageId
@@ -46,9 +46,9 @@ export class ProfileRepository implements IProfileRepository {
 
             if (uploadedImage) {
                 if (avatar) {
-                    await this.uploadService.updateExistingFile(uploadedImage, avatar)
+                    await this.uploadService.updateExistingFile({ uploadedFile: uploadedImage, fileId: avatar })
                 } else {
-                    const newImageId = await this.uploadService.createFile(uploadedImage, session)
+                    const newImageId = await this.uploadService.createFile({ uploadedFile: uploadedImage, session })
                     updateData.avatar = newImageId
                 }
             }
