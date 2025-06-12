@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Post, Query, Req, UseGuards } from '@nestjs/common';
-import { FavoriteService } from './favorite.service';
+import { FavoriteService } from './service/favorite.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -16,20 +16,20 @@ export class FavoriteController {
   @Roles(Role.Customer)
   @Post()
   addFavorite(
-    @Body() userInputs: CreateFavoriteDto,
+    @Body() payload: CreateFavoriteDto,
     @Req() req: Request
   ) {
-    return this.favoriteService.addFavorite(userInputs, req)
+    return this.favoriteService.addFavorite({ payload, req })
   }
 
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Customer)
   @Delete('')
   removeFavoriteById(
-    @Body() userInputs: CreateFavoriteDto,
+    @Body() payload: CreateFavoriteDto,
     @Req() req: Request
   ) {
-    return this.favoriteService.removeFavoriteById(userInputs, req)
+    return this.favoriteService.removeFavoriteById({ payload, req })
   }
 
   @UseGuards(AuthGuard, RolesGuard)
@@ -37,9 +37,9 @@ export class FavoriteController {
   @Delete('all')
   removeAllFavorites(
     @Req() req: Request,
-    @Query() query: GetFavoriteDto
+    @Query() queryFields: GetFavoriteDto
   ) {
-    return this.favoriteService.removeAllFavorites(req, query)
+    return this.favoriteService.removeAllFavorites({ req, queryFields })
   }
 
   @UseGuards(AuthGuard, RolesGuard)
@@ -47,8 +47,8 @@ export class FavoriteController {
   @Get()
   getUserFavorites(
     @Req() req: Request,
-    @Query() query: GetFavoriteDto
+    @Query() queryFields: GetFavoriteDto
   ) {
-    return this.favoriteService.getUserFavorites(req, query)
+    return this.favoriteService.getUserFavorites({ req, queryFields })
   }
 }

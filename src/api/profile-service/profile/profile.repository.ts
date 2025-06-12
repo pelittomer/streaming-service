@@ -5,7 +5,7 @@ import { Model, Types } from "mongoose";
 import { SharedUtilsService } from "src/common/utils/shared-utils.service";
 import { UploadService } from "src/api/upload-service/upload/upload.service";
 import { UpdateProfileDto } from "./dto/update-profile.dto";
-import { FavoriteRepository } from "../favorite/favorite.repository";
+import { FavoriteRepository } from "../favorite/repository/favorite.repository";
 
 @Injectable()
 export class ProfileRepository {
@@ -22,15 +22,15 @@ export class ProfileRepository {
 
     async create(
         queryFields: Partial<Profile>,
-         uploadedImage: Express.Multer.File
-        ): Promise<void> {
+        uploadedImage: Express.Multer.File
+    ): Promise<void> {
         await this.sharedUtilsService.executeTransaction(async (session) => {
             const imageId = await this.uploadService.createFile(uploadedImage, session)
             const [newProfile] = await this.profileModel.create([{
                 ...queryFields,
                 avatar: imageId
             }], { session })
-            await this.favoriteRepository.create({ profile: newProfile._id }, session)
+            await this.favoriteRepository.create({ payload: { profile: newProfile._id }, session })
         })
     }
 
