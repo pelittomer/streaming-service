@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Query, Req, UseGuards } from '@nestjs/common';
-import { WatchedHistoryService } from './watched-history.service';
+import { WatchedHistoryService } from './service/watched-history.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { CreateWatchedHistoryDto } from './dto/create-watched-history.dto';
 import { Request } from 'express';
@@ -14,19 +14,19 @@ export class WatchedHistoryController {
   @UseGuards(AuthGuard)
   @Post()
   recordWatchedHistory(
-    @Body() userInputs: CreateWatchedHistoryDto,
+    @Body() payload: CreateWatchedHistoryDto,
     @Req() req: Request
   ) {
-    return this.watchedHistoryService.recordWatchedHistory(userInputs, req)
+    return this.watchedHistoryService.recordWatchedHistory({ payload, req })
   }
 
   @UseGuards(AuthGuard)
   @Get('all')
   getAllWatchedHistory(
     @Req() req: Request,
-    @Query() query: WatchedHistoryQuery
+    @Query() queryFields: WatchedHistoryQuery
   ) {
-    return this.watchedHistoryService.getAllWatchedHistory(req, query)
+    return this.watchedHistoryService.getAllWatchedHistory({ req, queryFields })
   }
 
   @Throttle({
@@ -35,9 +35,9 @@ export class WatchedHistoryController {
   @UseGuards(AuthGuard)
   @Get('')
   getWatchedHistory(
-    @Query() query: GetWatchedHistoryDto,
+    @Query() queryFields: GetWatchedHistoryDto,
     @Req() req: Request
   ) {
-    return this.watchedHistoryService.getWatchedHistory(query, req)
+    return this.watchedHistoryService.getWatchedHistory({ queryFields, req })
   }
 }

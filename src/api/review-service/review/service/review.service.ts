@@ -3,11 +3,11 @@ import { ReviewRepository } from '../repository/review.repository';
 import { SharedUtilsService } from 'src/common/utils/shared-utils.service';
 import { Types } from 'mongoose';
 import { PartialGetReviewDto } from '../dto/get-review.dto';
-import { WatchedHistoryRepository } from 'src/api/profile-service/watched-history/watched-history.repository';
 import { ReviewUtilsService } from '../utils/review-utils.service';
 import { AddReviewParams } from './review.service.interface';
 import { PopulatedReview } from '../repository/review.repository.interface';
 import { REVIEW_MESSAGES } from '../constants/review.message';
+import { WatchedHistoryRepository } from 'src/api/profile-service/watched-history/repository/watched-history.repository';
 
 @Injectable()
 export class ReviewService {

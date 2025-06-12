@@ -1,15 +1,16 @@
 import { Module } from '@nestjs/common';
-import { WatchedHistoryService } from './watched-history.service';
+import { WatchedHistoryService } from './service/watched-history.service';
 import { WatchedHistoryController } from './watched-history.controller';
-import { WatchedHistoryRepository } from './watched-history.repository';
 import { MongooseModule } from '@nestjs/mongoose';
-import { WatchedHistory, WatchedHistorySchema } from './schemas/watched-history.schema';
+import { WatchedHistory, WatchedHistorySchema } from './entities/watched-history.entity';
 import { SharedUtilsModule } from 'src/common/utils/shared-utils.module';
 import { ProfileModule } from '../profile/profile.module';
+import { WatchedHistoryUtilsService } from './utils/watched-history-utils.service';
+import { WatchedHistoryRepository } from './repository/watched-history.repository';
 
 @Module({
   controllers: [WatchedHistoryController],
-  providers: [WatchedHistoryService, WatchedHistoryRepository],
+  providers: [WatchedHistoryService, WatchedHistoryRepository, WatchedHistoryUtilsService],
   imports: [
     MongooseModule.forFeature([{ name: WatchedHistory.name, schema: WatchedHistorySchema }]),
     SharedUtilsModule, ProfileModule
